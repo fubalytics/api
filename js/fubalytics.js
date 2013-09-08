@@ -197,7 +197,7 @@ var fubalytics={
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
-				console.log(d);
+				//console.log(d);
 				result=d;
 			},
 			error:function(d,s,x){
@@ -370,10 +370,9 @@ var fubalytics={
 		* 
 	**/
 	create_iframe_new_video:function(inp){
-
 		console.log(inp);
 		console.log("node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
-		check=this.check_params(inp, ["target_node", "internal_user_id"])
+		check=this.check_params(inp, ["target_node", "external_user_id"])
 		if (!check.result){
 			throw check.messages.join();
 		}
@@ -399,6 +398,9 @@ var fubalytics={
 		}
 		if ('game_time' in inp){
 			url=url+"&recording_time="+inp.game_time;
+		}
+		if ('event_type_id' in inp){
+			url=url+"&event_type_id="+inp.event_type_id;
 		}
 		
 
