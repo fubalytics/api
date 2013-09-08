@@ -1,0 +1,77 @@
+<html>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- set the patch according to your system! -->
+<script src="../js/fubalytics.js"></script>
+
+
+
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+
+
+<h1>Uploader</h1>
+<div class="well" id="uploader_container">
+</div>
+
+
+<!-- end of the html part -->
+
+
+
+
+<script type="text/javascript">
+
+/**
+EDIT_HERE: apply here your custom exception handling routine!
+if this is called, that means, that the process cannot operate further and 
+it has been cancelld 
+**/
+function handle_exception(e){
+	
+	alert(e);
+
+}
+fubalytics.auth_token="4zm7Ma5M2tRJUUZWtUyr";
+fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+
+
+
+/**
+EDIT_HERE:
+Set this data according to your application!
+**/
+//set this from your database!
+var internal_user_data={
+	id:2, 
+	email:"holger@gmx.de", 
+	firstname:"holger", 
+	lastname:"Wittke", 
+	language:"de",
+	club_name:"FC Hadoken 2013"
+};
+
+
+
+$(document).ready(function() {
+	var event_types=fubalytics.get_event_types();
+	console.log(event_types);
+	//render the uploader
+	fubalytics.create_iframe_new_video({
+        target_node:$("#uploader_container"),
+        external_user_id:1, //the user ID in YOUR system
+        club1_name: "VFL Wolfsburg",
+        club2_name: "Union",
+        game_time: "1318781876",
+        event_type_id: event_types[0].event_type.id,
+        arb_token:JSON.stringify({gamedate_id:3422})
+    });
+});
+
+</script>
+
+</body>
+</html>
