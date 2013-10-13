@@ -1,11 +1,28 @@
 //the fubalytics connector requires jQuery.
 
-//create the object to use
+/*
+   Class: fubalytics
+   The class, which manages the whole communication with the
+   fubalytics server.
+*/
 var fubalytics={
 	userid:0,
 	fubalytics_url:"",
 	auth_token: "",
 
+	/*
+	   Function: get_or_create_club
+	   Returns the club ID of the passed club name. If the club with
+	   the given name does not exist, it is created and then
+	   the new ID is returned.
+
+	   Parameters:
+	   	name - The name of the club
+
+	   Returns:
+	   	The ID of the club with the given name. Note if multiple clubs
+	   	with the given name exist, the first of them is returned.
+	*/
 	get_or_create_club:function(name){
 		/**
 		name: the name of the club.
@@ -36,18 +53,22 @@ var fubalytics={
 
 	},
 
-	/**
-	= Setup New User
-	create a new user in the fubalytics system.
+	/*
+	Function: setup_new_user
+	Creates a new user in the fubalytics system.
 	It throws an exception if not all parameters have been provided.
-	== Params:
-		* fubalytics_club_id: The id of the club, IN the fubalytics system
-		* internal_user_id: the ID of the user in YOUR system. It will be mapped to the user ID in the fubalytics system.
-		* email: The email of the user. Is required for payment processes.
-		* firstname (for later payment support)
-		* lastname (for later payment support)
-		* language: Set the language of the user. supported strings: "de", "en", "pt", "ru", "es"
-	**/
+	
+	Parameters:
+		fubalytics_club_id - The id of the club, IN the fubalytics system
+		internal_user_id - the ID of the user in YOUR system. It will be mapped to the user ID in the fubalytics system.
+		email -  The email of the user. Is required for payment processes.
+		firstname -  (for later payment support)
+		lastname -  (for later payment support)
+		language - Set the language of the user. supported strings: "de", "en", "pt", "ru", "es"
+
+	Returns:
+		The ID of the created user.
+	*/
 	setup_new_user:function(inp){
 		/**the obj must have
 		the following properties:
@@ -104,12 +125,17 @@ var fubalytics={
 		return result;
 	},
 
-	/**
+	/*
+	Function: get_user_data
 	This method gets the fubalytics user data as a 
 	json object. 
-	== Params:
-	* internal_id: Your internal user id.
-	**/
+	
+	Parameters:
+		internal_id - Your internal ID of the user.
+
+	Returns:
+		The full user object.
+	*/
 	get_user_data:function(internal_id){
 		var result;
 		$.ajax({
@@ -135,6 +161,13 @@ var fubalytics={
 
 	},
 
+	/*
+	Function: get_team_ranks
+	Returns all possible team ranks in the fubalytics system. 
+	Team ranks are basically numbers: 1,2,3, which represent the rank of a team in a club.
+	Returns:
+		List of team rank objects.
+	*/
 	get_team_ranks:function(){
 		var result;
 		$.ajax({
@@ -157,10 +190,13 @@ var fubalytics={
 		return result;
 	},
 
-	/**
-	returns a list of available team types in the fubalytics
-	system 
-	**/
+	/*
+	Function: get_team_types
+	Returns a list of available team types in the fubalytics
+	system. Team types are currently "U13", "U14", ... which represent basically the age of the players in a team.
+	Returns:
+		List of team type objects.
+	*/
 	get_team_types:function(){
 		var result;
 		$.ajax({
@@ -183,10 +219,15 @@ var fubalytics={
 		return result;
 	},
 
-	/**
-	returns a list of available team types in the fubalytics
-	system 
-	**/
+	/*
+	Function: get_event_types
+	Returns a list of available team types in the fubalytics
+	system. Event types are "league", "friendly", ...
+	Please note that the names of the event types are translated
+	into the language of the manager user.
+	Returns:
+		List of event type objects. 
+	*/
 	get_event_types:function(){
 		var result;
 		$.ajax({
@@ -210,13 +251,16 @@ var fubalytics={
 	},
 
 	
-	/**
+	/*
+	Function: create_players
 	Submits multiple new players to the fubalytics system.
-	The format of the object must be e.g.
-	var input={fubalytics_user_id:33, 
-		players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, position_id:22}, 
-				{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, nr:11, position_id:21}]};
-	**/
+
+	Parameters:
+		The format of the object must be e.g.
+		> var input={fubalytics_user_id:33, 
+		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, position_id:22}, 
+		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, nr:11, position_id:21}]};
+	*/
 	create_players:function(input){
 		var result;
 		$.ajax({
@@ -239,20 +283,28 @@ var fubalytics={
 		return result;
 	},
 
-	/**
+	/*
+	Function: find_player_by_arb_token
 	Searches the fubalytics database for a player with the
-	given external ID (in your system). The player must be setup before with a
-	suitable arbitrary token. e.g. {external_id:3}.
-	@param arb_token: String. Pass here the token, you would like to search for.
-	e.g. {e2c_id:3}
-	**/
+	given external ID (in your system). 
+
+	Parameters:
+		The player must be setup before with a
+		suitable arbitrary token. e.g. {external_id:3}.
+
+		arb_token - String. Pass here the token, you would like to search for.
+		e.g. >{e2c_id:3}
+
+	Returns:
+		A list of all found players matching the given arb. token.
+	*/
 	find_player_by_arb_token:function(input){
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/find_by_arb_token.json",
 			type: "GET",
 			async: false,
-			data: {query:input.arb_token,
+			data: {query:input,
 				auth_token:this.auth_token},
 			dataType: "json",
 			context: document.body,
@@ -269,17 +321,62 @@ var fubalytics={
 	},
 
 
-	/**
+	/*
+	Function: delete_player
 	Deletes a player from the fubalytics system. 
-	TODO
-	**/
-	delete_player:function(input){
+	Parameters:
+		id - The ID of the player in the fubalytics system. See <find_player_by_arb_token> if you 
+		need to find it first.
+
+	Returns:
+		True if ok, othervise an exception is thrown.
+	*/
+	delete_player:function(id){
 		var result;
 		$.ajax({
-			url:this.fubalytics_url+"/api/players/.json",
-			type: "DELETE",
+			url:this.fubalytics_url+"/api/players/"+id+"/destroy_player.json",
+			type: "GET",
 			async: false,
-			data: this.merge_options({auth_token:this.auth_token}, input),
+			data: this.merge_options({auth_token:this.auth_token}, id),
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the user: "+d.responseText;
+			}
+
+		});
+		return result;
+
+	},
+
+	/*
+	Function: update_player
+	Updates the attrbutes of a player in the fubalytics system. 
+
+	Parameters:
+		attributes - object containing following attributes:
+			* id - Fubalytics Id of the player to update. See <find_player_by_arb_token> to get it.
+			* gender - String "m" or "w" 
+			* firstname - string
+			* lastname - String
+	*/
+	update_player:function(attributes){
+		check=this.check_params(attributes, ["id"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+
+		var result;
+		$.ajax({
+			url:this.fubalytics_url+"/api/players/"+attributes.id+"/update_player.json",
+			type: "GET",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token}, attributes),
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -298,11 +395,14 @@ var fubalytics={
 
 
 	/**
+	Function: create_iframe_player_profile
 	Shows the player profile with its game statistics in a iframe
 	@param target_node: The dom node, where the IFrame will be placed into
 	@param fubalytics_player_id: The player ID in the fubalytics System. 
 	You can get it by using the method find_player_by_arb_token(...).
-	@param external_user_id: The ID of the user, in YOUR system.
+	
+	Parameters:
+		input.external_user_id - The ID of the user, in YOUR system.
 
 	**/
 	create_iframe_player_profile:function(input){
@@ -329,12 +429,14 @@ var fubalytics={
 	
 
 	/**
+	Function: create_iframe_videos_index
 	Creates an IFrame in the provided node.
 	@param inp: options object containing:
 	@param target_node: The dom node, where the IFrame should
 	be placed into.
-	@param fubalytics_user_id: The user ID of the user inside the fubalytics system. Use the
-		method get_user_data(your_user_id) to get it!
+	Parameters:
+		inp.fubalytics_user_id - The user ID of the user inside the fubalytics system. Use the
+		method <get_user_data>(your_user_id) to get it!
 	**/
 	create_iframe_videos_index:function(inp){
 		console.log(inp);
@@ -346,8 +448,10 @@ var fubalytics={
 		this.check_auth_token();
 		this.check_server_url();
 
+		var readonly = (inp.readonly==null ? false : true);
+
 		ifrm = document.createElement("IFRAME"); 
-		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id); 
+		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly); 
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
 		inp.target_node.append(ifrm); 
@@ -355,19 +459,19 @@ var fubalytics={
 
 
 	/**
+	Funcion: create_iframe_new_video
 	Sets up an iframe in a given node 
 	so the user may upload a new video.
-	Input:
-		@param taget_node: dom node (e.g. $("mynode") if you use jquery)
-		@param external_user_id: The user ID of the user inside your system. Use the
-		@param club1_name
-		@param club2_name
-		@game_time the unix timestamp for the game time
-		@arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
+	Parameters:
+		Input:
+		* taget_node: dom node (e.g. $("mynode") if you use jquery)
+		* external_user_id: The user ID of the user inside your system. Use the
+		* club1_name
+		* club2_name
+		* game_time the unix timestamp for the game time
+		* arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
 		You can pass arbitrary json objects. e.g. {a:234, b:333, c:"hello"}. Make sure to use " not ' !
-	== Optional parameters:
-		* 
 	**/
 	create_iframe_new_video:function(inp){
 		console.log(inp);
@@ -418,6 +522,7 @@ var fubalytics={
 
 
 	/**
+	Function: check_params
 	Returns an object containing the check result and 
 	all the added messages:
 	{result:bool, messages:array of string}
@@ -444,6 +549,161 @@ var fubalytics={
 		if (this.fubalytics_url==""){
 			throw "error.no_fubaurl";
 		}
+	},
+
+	/**
+	Function: find_recording_by_arb_token
+	Searches for a recording using the arbitrary token as a query.
+	Parameters:
+		token - The token. e.g. {e2c_id:3}
+	**/
+	find_recording_by_arb_token:function(token)
+	{
+		var result;
+		$.ajax({
+			url:this.fubalytics_url+"/api/recordings/find_by_arb_token.json",
+			type: "GET",
+			async: false,
+			data: {query:token,
+				auth_token:this.auth_token},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the recordings: "+d.responseText;
+			}
+
+		});
+		return result;
+
+	},
+
+	/**
+	Function: update_recording
+	updates the attributes of a recording.
+	Parameters:
+		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
+		inp.team_1 - Object describing the first team
+		* team_rank_id -  Team rank ID
+		* team_type_id -  Team type ID
+		* club_id -  Club ID. See <get_or_create_club> about how to get a clubs ID
+
+		inp.team_2 - Object describing the second team (if the event type is not a training)
+		* team_rank_id
+		* team_type_id
+		* club_id 
+
+		inp.title -  The title of the recording
+		inp.description -  Description
+		inp.start_time -  Start time of the recording
+		inp.score_team_1 - Score of the first team
+		inp.score_team_2 - Score of the second team
+		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
+		inp.arb_token
+
+	**/
+	update_recording:function(inp)
+	{
+		$.ajax({
+			url:this.fubalytics_url+"/api/recordings/"+inp.id+".json",
+			type: "PUT",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.update_recording returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the user: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/**
+	Function: delete_recording
+	Deletes the recording and all its videos and tags.
+	Parameters: 
+		inp.id - ID of the recording in the fubalytics system.
+	**/
+	delete_recording: function(inp)
+	{
+		$.ajax({
+			url:this.fubalytics_url+"/api/recordings/"+inp.id+".json",
+			type: "DELETE",
+			async: false,
+			data: {auth_token:this.auth_token}, 
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.delete_recording returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the user: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/**
+	Function: create_recording.
+	Creates new recording.
+	Parameters:
+		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
+		inp.team_1 - Object describing the first team
+		* team_rank_id -  Team rank ID
+		* team_type_id -  Team type ID
+		* club_id -  Club ID. See <get_or_create_club> about how to get a clubs ID
+
+		inp.team_2 - Object describing the second team (if the event type is not a training)
+		* team_rank_id
+		* team_type_id
+		* club_id 
+
+		inp.title -  The title of the recording
+		inp.description -  Description
+		inp.start_time -  Start time of the recording
+		inp.score_team_1 - Score of the first team
+		inp.score_team_2 - Score of the second team
+		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
+		inp.arb_token - The arbitrary token
+	**/
+	create_recording:function(inp)
+	{
+		$.ajax({
+			url:this.fubalytics_url+"/api/recordings.json",
+			type: "POST",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.create_recording returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the user: "+d.responseText;
+			}
+
+		});
+		return result;
+
 	},
 
 
