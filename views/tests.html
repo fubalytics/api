@@ -64,11 +64,11 @@ var internal_user_data={
 };
 
 //----------
-//get the internal club_id insite the fubalytics system
+//get the internal club_id of a club from the fubalytics system
 //----------
 try {
 	var club_id=fubalytics.get_or_create_club(internal_user_data.club_name);
-	console.log("Received fubalytics club id: "+club_id);
+	console.log("The club "+internal_user_data.club_name+" has the id %i in fubalytics", club_id);
 }catch(e){
 	handle_exception(e);
 	return;
@@ -77,22 +77,20 @@ try {
 
 
 //-------------
-//	get the available team ranks and render them using Mustache
+//	get the available team ranks 
 //--------------
 var team_ranks=fubalytics.get_team_ranks();
-console.log("#TEAM RANKS#");
-console.log(team_ranks);
+console.log("#TEAM RANKS#: %o", team_ranks);
 
 //--------------
-//	get the available team types  and render them using Mustache
+//	get the available team types 
 //--------------
 var team_types=fubalytics.get_team_types();
-console.log("#TEAM TYPES#");
-console.log(team_types);
+console.log("#TEAM TYPES#: %o", team_types);
 
 
 //-------------
-// 	creating the user in fubalytics
+// 	creating a user in fubalytics
 //-------------
 try {
 	var new_user_id=fubalytics.setup_new_user({
@@ -118,25 +116,21 @@ try {
 	return;
 }
 
+
 //------------------
 //getting the object for the player stored here (in e2c) with the ID 23
 //------------------
 var player=fubalytics.find_player_by_arb_token("{e2c_id:23}")[0].player;
-console.log("player found: ");
-console.log(player);
+console.log("player found: %o", player);
 
 console.log("updating player");
 fubalytics.update_player({id:player.id, gender:"w", firstname:"updated_firstname", lastname:"updated_lastname"});
-
-
 //check if the update was successful
 console.log("checking player update");
 player=fubalytics.find_player_by_arb_token("{e2c_id:23}")[0];
-
 if (player.player.firstname!="updated_firstname"){
 	console.error("The player update was not successful!")
 }
-
 //-------destroy the player
 fubalytics.delete_player(player.player.id);
 //check if deleting was successful
@@ -146,6 +140,65 @@ console.log(players);
 if (players.length>0){
 	console.error("The player deletion was not successful!")
 }
+
+//----------------
+//	testing the recording update
+//----------------
+var recordings=fubalytics.find_recording_by_arb_token("e2c_id:11")
+if (!recordings)
+{
+	console.error("Could not find any recording with e2c_id:11");
+}
+console.log("found recording: %o", recordings);
+inp={id:recordings[0].recording.id, 
+	team_1:{
+		team_rank_id:1, 
+		team_type_id: 1,
+		club_id:1},
+	team_2:{
+		team_rank_id:2, 
+		team_type_id:1, 
+		club_id:2},
+	title:"test",
+	description:"test description",
+	start_time:"11.12.2011 10:20",
+	score_team_1:1,
+	score_team_2:0,
+	event_type_id: 1
+};
+
+var new_rec=fubalytics.update_recording(inp);
+if (!new_rec){
+	console.error("Could not update the recording");
+}
+console.log("After updating the recording: %o", new_rec);
+
+//-----------------
+//	creating and deleting a new recording
+//-----------------
+var inp2={ 
+	team_1:{
+		team_rank_id:1, 
+		team_type_id: 1,
+		club_id:1},
+	team_2:{
+		team_rank_id:2, 
+		team_type_id:1, 
+		club_id:2},
+	title:"test",
+	description:"test description",
+	start_time:"11.12.2011 10:20",
+	score_team_1:1,
+	score_team_2:0,
+	event_type_id: 4,
+	arb_token:"{e2c_id:12}"
+};
+
+new_rec=fubalytics.create_recording(inp2);
+console.log("create a new recording: %o", new_rec);
+
+//now delete it
+fubalytics.delete_recording({id:new_rec.recording.id});
 
 
 </script>
