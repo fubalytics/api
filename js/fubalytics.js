@@ -4,6 +4,8 @@
    Class: fubalytics
    The class, which manages the whole communication with the
    fubalytics server.
+   Please see the file views/test.html 
+   for reference, where the most of these methods are used in tests.
 */
 var fubalytics={
 	userid:0,
@@ -194,6 +196,7 @@ var fubalytics={
 	Function: get_team_types
 	Returns a list of available team types in the fubalytics
 	system. Team types are currently "U13", "U14", ... which represent basically the age of the players in a team.
+
 	Returns:
 		List of team type objects.
 	*/
@@ -225,6 +228,7 @@ var fubalytics={
 	system. Event types are "league", "friendly", ...
 	Please note that the names of the event types are translated
 	into the language of the manager user.
+
 	Returns:
 		List of event type objects. 
 	*/
@@ -293,7 +297,8 @@ var fubalytics={
 		suitable arbitrary token. e.g. {external_id:3}.
 
 		arb_token - String. Pass here the token, you would like to search for.
-		e.g. >{e2c_id:3}
+		e.g. 
+		> {e2c_id:3}
 
 	Returns:
 		A list of all found players matching the given arb. token.
@@ -324,6 +329,7 @@ var fubalytics={
 	/*
 	Function: delete_player
 	Deletes a player from the fubalytics system. 
+
 	Parameters:
 		id - The ID of the player in the fubalytics system. See <find_player_by_arb_token> if you 
 		need to find it first.
@@ -394,17 +400,17 @@ var fubalytics={
 	},
 
 
-	/**
+	/*
 	Function: create_iframe_player_profile
 	Shows the player profile with its game statistics in a iframe
-	@param target_node: The dom node, where the IFrame will be placed into
-	@param fubalytics_player_id: The player ID in the fubalytics System. 
-	You can get it by using the method find_player_by_arb_token(...).
-	
+
 	Parameters:
+		target_node - The dom node, where the IFrame will be placed into
+		fubalytics_player_id - The player ID in the fubalytics System. 
+		You can get it by using the method find_player_by_arb_token(...).
 		input.external_user_id - The ID of the user, in YOUR system.
 
-	**/
+	*/
 	create_iframe_player_profile:function(input){
 		console.log(input);
 		check=this.check_params(input, ["target_node", "fubalytics_player_id", "external_user_id"])
@@ -428,16 +434,15 @@ var fubalytics={
 
 	
 
-	/**
+	/*
 	Function: create_iframe_videos_index
 	Creates an IFrame in the provided node.
-	@param inp: options object containing:
-	@param target_node: The dom node, where the IFrame should
-	be placed into.
+
 	Parameters:
 		inp.fubalytics_user_id - The user ID of the user inside the fubalytics system. Use the
 		method <get_user_data>(your_user_id) to get it!
-	**/
+		inp.target_node - DOM-Node, where the Iframe should be placed int
+	*/
 	create_iframe_videos_index:function(inp){
 		console.log(inp);
 		console.log("node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
@@ -458,10 +463,11 @@ var fubalytics={
 	},
 
 
-	/**
+	/*
 	Funcion: create_iframe_new_video
 	Sets up an iframe in a given node 
 	so the user may upload a new video.
+
 	Parameters:
 		Input:
 		* taget_node: dom node (e.g. $("mynode") if you use jquery)
@@ -472,7 +478,7 @@ var fubalytics={
 		* arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
 		You can pass arbitrary json objects. e.g. {a:234, b:333, c:"hello"}. Make sure to use " not ' !
-	**/
+	*/
 	create_iframe_new_video:function(inp){
 		console.log(inp);
 		console.log("node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
@@ -521,12 +527,11 @@ var fubalytics={
 	},
 
 
-	/**
-	Function: check_params
+	/*
 	Returns an object containing the check result and 
 	all the added messages:
 	{result:bool, messages:array of string}
-	**/
+	*/
 	check_params:function(obj, req_obj){
 		var result=true;
 		var messages=new Array();
@@ -551,12 +556,13 @@ var fubalytics={
 		}
 	},
 
-	/**
+	/*
 	Function: find_recording_by_arb_token
 	Searches for a recording using the arbitrary token as a query.
+
 	Parameters:
 		token - The token. e.g. {e2c_id:3}
-	**/
+	*/
 	find_recording_by_arb_token:function(token)
 	{
 		var result;
@@ -581,9 +587,10 @@ var fubalytics={
 
 	},
 
-	/**
+	/*
 	Function: update_recording
 	updates the attributes of a recording.
+
 	Parameters:
 		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
 		inp.team_1 - Object describing the first team
@@ -604,7 +611,7 @@ var fubalytics={
 		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
 		inp.arb_token
 
-	**/
+	*/
 	update_recording:function(inp)
 	{
 		$.ajax({
@@ -629,12 +636,13 @@ var fubalytics={
 	},
 
 
-	/**
+	/*
 	Function: delete_recording
 	Deletes the recording and all its videos and tags.
+
 	Parameters: 
 		inp.id - ID of the recording in the fubalytics system.
-	**/
+	*/
 	delete_recording: function(inp)
 	{
 		$.ajax({
@@ -658,10 +666,10 @@ var fubalytics={
 		return result;
 	},
 
-
-	/**
+	/*
 	Function: create_recording.
 	Creates new recording.
+
 	Parameters:
 		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
 		inp.team_1 - Object describing the first team
@@ -681,7 +689,7 @@ var fubalytics={
 		inp.score_team_2 - Score of the second team
 		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
 		inp.arb_token - The arbitrary token
-	**/
+	*/
 	create_recording:function(inp)
 	{
 		$.ajax({
