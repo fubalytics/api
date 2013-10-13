@@ -145,33 +145,37 @@ if (players.length>0){
 //	testing the recording update
 //----------------
 var recordings=fubalytics.find_recording_by_arb_token("e2c_id:11")
-if (!recordings)
+if (recordings.size()==0)
 {
 	console.error("Could not find any recording with e2c_id:11");
-}
-console.log("found recording: %o", recordings);
-inp={id:recordings[0].recording.id, 
-	team_1:{
-		team_rank_id:1, 
-		team_type_id: 1,
-		club_id:1},
-	team_2:{
-		team_rank_id:2, 
-		team_type_id:1, 
-		club_id:2},
-	title:"test",
-	description:"test description",
-	start_time:"11.12.2011 10:20",
-	score_team_1:1,
-	score_team_2:0,
-	event_type_id: 1
-};
+} 
+else 
+{
 
-var new_rec=fubalytics.update_recording(inp);
-if (!new_rec){
-	console.error("Could not update the recording");
+	console.log("found recording: %o", recordings);
+	inp={id:recordings[0].recording.id, 
+		team_1:{
+			team_rank_id:1, 
+			team_type_id: 1,
+			club_id:1},
+		team_2:{
+			team_rank_id:2, 
+			team_type_id:1, 
+			club_id:2},
+		title:"test",
+		description:"test description",
+		start_time:"11.12.2011 10:20",
+		score_team_1:1,
+		score_team_2:0,
+		event_type_id: 1
+	};
+
+	var new_rec=fubalytics.update_recording(inp);
+	if (!new_rec){
+		console.error("Could not update the recording");
+	}
+	console.log("After updating the recording: %o", new_rec);
 }
-console.log("After updating the recording: %o", new_rec);
 
 //-----------------
 //	creating and deleting a new recording
