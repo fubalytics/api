@@ -52,8 +52,13 @@ function get_all_players_for_test(){
 	return players;
 }
 
-fubalytics.auth_token="JunHbEJhUgjFjqiiaauC"; //this might change frequently. Please check your settings
-fubalytics.fubalytics_url="http://demo.fubalytics.net:3000"; //use here only a testing server please!!!!!!
+//fubalytics.auth_token="JunHbEJhUgjFjqiiaauC"; //this might change frequently. Please check your settings
+//fubalytics.fubalytics_url="http://demo.fubalytics.net:3000"; //use here only a testing server please!!!!!!
+
+fubalytics.auth_token="J7xRf6QyYeMd6w7Vhm2x"; //this might change frequently. Please check your settings
+fubalytics.fubalytics_url="http://pre12.fubalytics.local:3000"; //use here only a testing server please!!!!!!
+
+
 var internal_user_data={
 	id:1, 
 	email:"holger"+Math.round(Math.random(4)*1e4)+"@gmx.de", 
@@ -154,20 +159,24 @@ else
 
 	console.log("found recording: %o", recordings);
 	inp={id:recordings[0].recording.id, 
-		team_1:{
-			team_rank_id:1, 
-			team_type_id: 1,
-			club_id:1},
-		team_2:{
-			team_rank_id:2, 
-			team_type_id:1, 
-			club_id:2},
+		event: {
+			team:{
+				team_rank:{id:1}, 
+				team_type:{id:1},
+				club: {id:1}
+			},
+			opponent_team:{
+				team_rank:{id:1}, 
+				team_type:{id:1},
+				club:{id:1}
+			},
+			score_team_1:0,
+			score_team_2:1,
+			event_type:{id:1},
+		},
 		title:"test",
 		description:"test description",
-		start_time:"11.12.2011 10:20",
-		score_team_1:1,
-		score_team_2:0,
-		event_type_id: 1
+		start_time:"11.12.2011 10:20"
 	};
 
 	var new_rec=fubalytics.update_recording(inp);
@@ -180,21 +189,25 @@ else
 //-----------------
 //	creating and deleting a new recording
 //-----------------
-var inp2={ 
-	team_1:{
-		team_rank_id:1, 
-		team_type_id: 1,
-		club_id:1},
-	team_2:{
-		team_rank_id:2, 
-		team_type_id:1, 
-		club_id:2},
-	title:"test",
+
+inp2={event: {
+		team:{
+			team_rank:{id:1}, 
+			team_type:{id:1},
+			club: {id:1}
+		},
+		opponent_team:{
+			team_rank:{id:1}, 
+			team_type:{id:1},
+			club:{id:1}
+		},
+		score_team_1:0,
+		score_team_2:1,
+		event_type:{id:1},
+	},
+	title:"test2",
 	description:"test description",
 	start_time:"11.12.2011 10:20",
-	score_team_1:1,
-	score_team_2:0,
-	event_type_id: 4,
 	arb_token:"{e2c_id:12}"
 };
 

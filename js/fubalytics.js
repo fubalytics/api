@@ -593,21 +593,30 @@ var fubalytics={
 
 	Parameters:
 		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
-		inp.team_1 - Object describing the first team
-		* team_rank_id -  Team rank ID
-		* team_type_id -  Team type ID
-		* club_id -  Club ID. See <get_or_create_club> about how to get a clubs ID
+		* event:
+			* event_type - Event Type. Eg. Training, League, ...
+				* id - Its ID.
+			* team - Object describing the first team
+				* team_rank:
+					* id -  Team rank ID
+				* team_type:
+					* id -  Team type ID
+				* club:
+					* id -  Club ID. See <get_or_create_club> about how to get a clubs ID
 
-		inp.team_2 - Object describing the second team (if the event type is not a training)
-		* team_rank_id
-		* team_type_id
-		* club_id 
+			* opponent_team - Object describing the second team (if the event type is not a training)
+				* team_rank:
+					* id
+				* team_type:
+					* id
+				* club:
+					* id 
 
 		inp.title -  The title of the recording
 		inp.description -  Description
 		inp.start_time -  Start time of the recording
-		inp.score_team_1 - Score of the first team
-		inp.score_team_2 - Score of the second team
+		inp.event.score_team_1 - Score of the first team
+		inp.event.score_team_2 - Score of the second team
 		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
 		inp.arb_token
 
