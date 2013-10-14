@@ -590,9 +590,11 @@ var fubalytics={
 	/*
 	Function: update_recording
 	updates the attributes of a recording.
+	Please use the example in test.html. The input object is quite nested, so
+	its easier to see it on an example.
 
 	Parameters:
-		inp.id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
+		id - The ID of the recording to update. See <find_recording_by_arb_token> about how to get the fubalytics recording ID.
 		* event:
 			* event_type - Event Type. Eg. Training, League, ...
 				* id - Its ID.
