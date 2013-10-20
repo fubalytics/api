@@ -1,0 +1,96 @@
+<html>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- set the patch according to your system! -->
+<script src="../js/fubalytics.js"></script>
+<script src="../js/qunit.js"></script>
+
+
+
+<link rel="stylesheet" href="../css/qunit.css">
+
+<h1>Tests</h1>
+
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+
+<script type="text/javascript">
+
+fubalytics.auth_token="J7xRf6QyYeMd6w7Vhm2x"; //this might change frequently. Please check your settings
+fubalytics.fubalytics_url="http://pre12.fubalytics.local:3000"; //use here only a testing server please!!!!!!
+test( "Check the steps for player creating and displaying its statistics", function() {
+	//--------------
+	//	setup a new user for tests
+	//--------------
+	var club_id=fubalytics.get_or_create_club("FC Hadoken 2013");
+	ok( club_id!=null, "creating/searching for a club Passed!" );
+
+	var user_arb_token="{e2c_id:"+Math.round(Math.random(4)*1e4)+"}";
+
+	var new_user_id=fubalytics.setup_new_user({
+			club_id: club_id,
+			arb_token:user_arb_token,
+			email: "jochen"+Math.round(Math.random(4)*1e4)+"@test.de", //avoid dublicate emails for testing
+			firstname: "Jochen",
+			lastname: "Müller",
+			language: "de"});
+	ok( new_user_id!=null, "creating a new user Passed!" );
+
+	var positions=fubalytics.get_positions();
+	ok( positions!=null && positions.length>0, "positions Passed!" );
+
+
+	var team_ranks=fubalytics.get_team_ranks();
+
+	ok( team_ranks!=null && team_ranks.length>0, "team ranks Passed!" );
+
+	var team_types=fubalytics.get_team_types();
+	ok( team_types!=null && team_types.length>0, "team types Passed!" );
+
+	var create_players_result=fubalytics.create_players({
+		club_id: club_id,
+		team_rank_id:team_ranks[0].team_rank.id,
+		team_type_id:team_types[0].team_type.id,
+		fubalytics_user_id:new_user_id,
+		players:[{
+			firstname:"Alex",
+			lastname:"Holm",
+			nr:11,
+			position_id:positions[0].position.id,
+			arb_token:"{e2c_id:343}"
+		}]
+	});
+	ok( create_players_result!=null, "creating player Passed!" );
+
+	//find the player's ID in the fubalytics system
+	var players=fubalytics.find_players_by_arb_token("{e2c_id:343}");
+	console.log("player: %o", players);
+
+	ok( players.length>0 , "searching for player Passed!" );
+
+
+
+	var inp={
+		target_node:$("#stats_container"),
+		fubalytics_player_id:players[0].player.id,
+		user_arb_token:user_arb_token 
+	}; 
+
+	fubalytics.create_iframe_player_statistics(inp);
+
+	//clean up
+	fubalytics.delete_player(players[0].player.id);
+
+});//end of test() function
+
+</script>
+
+<div id="stats_container">
+	empty
+</div>
+</body>
+</html>
