@@ -55,15 +55,22 @@ function get_all_players_for_test(){
 //fubalytics.auth_token="JunHbEJhUgjFjqiiaauC"; //this might change frequently. Please check your settings
 //fubalytics.fubalytics_url="http://demo.fubalytics.net:3000"; //use here only a testing server please!!!!!!
 
+//------------
+// Get these data from your fubalytics account. 
+// Goto to "Profile" and copy your token here. If no token appears (unter the payments button)
+// then contact fubalytics
+//------------
 fubalytics.auth_token="J7xRf6QyYeMd6w7Vhm2x"; //this might change frequently. Please check your settings
 fubalytics.fubalytics_url="http://pre12.fubalytics.local:3000"; //use here only a testing server please!!!!!!
 
-
+//--------------
+// set the parameters of the new user
+//--------------
 var internal_user_data={
 	id:1, 
 	email:"holger"+Math.round(Math.random(4)*1e4)+"@gmx.de", 
 	firstname:"holger", 
-	lastname:"Wittke", 
+	lastname:"Wottke", 
 	language:"de",
 	club_name:"FC Hadoken 2013"
 };
@@ -82,13 +89,13 @@ try {
 
 
 //-------------
-//	get the available team ranks 
+//	get the available team ranks (e.g. 1., 2., ...)
 //--------------
 var team_ranks=fubalytics.get_team_ranks();
 console.log("#TEAM RANKS#: %o", team_ranks);
 
 //--------------
-//	get the available team types 
+//	get the available team types (U13, 16, U20, ...)
 //--------------
 var team_types=fubalytics.get_team_types();
 console.log("#TEAM TYPES#: %o", team_types);
@@ -100,14 +107,16 @@ console.log("#TEAM TYPES#: %o", team_types);
 try {
 	var new_user_id=fubalytics.setup_new_user({
 		club_id: club_id,
-		internal_user_id: internal_user_data.id, //the user ID of THIS user
+		internal_user_id: internal_user_data.id, //the user ID of THIS user in e2c system
+		arb_token:"{e2c_id:"+internal_user_data.id+"}",
 		email: internal_user_data.email,
 		firstname: internal_user_data.firstname,
 		lastname: internal_user_data.lastname,
 		language: internal_user_data.language});
 	console.log("User created: "+new_user_id);
-	// submit all the players
-	//define the input first
+	//---------------
+	// submit all the players returned by the method "get_all_players_for_test"
+	//--------------
 	var players_batch_input={
 		team_type_id:team_types[0].team_type.id, 
 		team_rank_id:team_ranks[0].team_rank.id, 
@@ -117,39 +126,45 @@ try {
 	//call the api method
 	fubalytics.create_players(players_batch_input);
 }catch(e){
+	//handle the exception
 	handle_exception(e);
 	return;
 }
 
 
 //------------------
-//getting the object for the player stored here (in e2c) with the ID 23
+//getting the player stored here (in e2c) with the ID 23
 //------------------
-var player=fubalytics.find_player_by_arb_token("{e2c_id:23}")[0].player;
+var player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0].player;
 console.log("player found: %o", player);
 
+//-----------------
+//	update the player data
+//-----------------
 console.log("updating player");
 fubalytics.update_player({id:player.id, gender:"w", firstname:"updated_firstname", lastname:"updated_lastname"});
 //check if the update was successful
 console.log("checking player update");
-player=fubalytics.find_player_by_arb_token("{e2c_id:23}")[0];
+player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0];
 if (player.player.firstname!="updated_firstname"){
 	console.error("The player update was not successful!")
 }
-//-------destroy the player
+//-----------
+//  destroy the player
+//-----------
 fubalytics.delete_player(player.player.id);
 //check if deleting was successful
-players=fubalytics.find_player_by_arb_token("{e2c_id:23}");
+players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
 console.log("found players:");
 console.log(players);
 if (players.length>0){
-	console.error("The player deletion was not successful!")
+	console.error("The player deletion was not successful!");
 }
 
 //----------------
 //	testing the recording update
 //----------------
-var recordings=fubalytics.find_recording_by_arb_token("e2c_id:11")
+var recordings=fubalytics.find_recordings_by_arb_token("e2c_id:11")
 if (recordings.length==0)
 {
 	console.error("Could not find any recording with e2c_id:11");

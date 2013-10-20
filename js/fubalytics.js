@@ -63,28 +63,17 @@ var fubalytics={
 	Parameters:
 		fubalytics_club_id - The id of the club, IN the fubalytics system
 		internal_user_id - the ID of the user in YOUR system. It will be mapped to the user ID in the fubalytics system.
+		arb_token - The arbitrary token. e.g. "{e2c_id:23}"
 		email -  The email of the user. Is required for payment processes.
 		firstname -  (for later payment support)
 		lastname -  (for later payment support)
 		language - Set the language of the user. supported strings: "de", "en", "pt", "ru", "es"
 
 	Returns:
-		The ID of the created user.
+		The ID of the created user inside the fubalytics system.
 	*/
 	setup_new_user:function(inp){
-		/**the obj must have
-		the following properties:
-		* fubalytics_club_id, 
-		* internal_user_id, (the User ID of the user IN THE fubalytics system)
-		* language, 
-		If one of them is not set, an exception is thrown
-
-		The proccess performs following steps:
-		1. get or create a club_id
-		2. create a user (email, firstname, lastname, club_id)
-		3. submit all new players
-		**/
-		check=this.check_params(inp, ["club_id", "internal_user_id", "firstname", "lastname", "email", "language"])
+		check=this.check_params(inp, ["club_id", "arb_token", "firstname", "lastname", "email", "language"])
 		if (!check.result){
 			throw check.messages.join();
 		}
@@ -95,7 +84,7 @@ var fubalytics={
 		//	create the user with the received club id
 		//--------------
 		//setup the arbitrary token 
-		var arb_token=JSON.stringify({external_user_id:inp.internal_user_id});
+		var arb_token=inp.arb_token; //JSON.stringify({e2c_id:inp.internal_user_id});
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/users.json",
@@ -133,18 +122,18 @@ var fubalytics={
 	json object. 
 	
 	Parameters:
-		internal_id - Your internal ID of the user.
+		arb_token - The arbitrary token, which is the the key to your user. e.g. "{e2c_id:22}"
 
 	Returns:
 		The full user object.
 	*/
-	get_user_data:function(internal_id){
+	get_user_data:function(arb_token){
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/users/find_by_arb_token.json",
 			type: "GET",
 			async: false,
-			data: {query:"external_user_id\":"+internal_id+"}",
+			data: {query: arb_token, //
 				auth_token:this.auth_token},
 			dataType: "json",
 			context: document.body,
@@ -174,6 +163,36 @@ var fubalytics={
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/team_ranks.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the user: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+
+	/*
+	Function: get_positions
+	Returns all possible player positions. 
+	Returns:
+		List of team rank objects.
+	*/
+	get_positions:function(){
+		var result;
+		$.ajax({
+			url:this.fubalytics_url+"/api/positions.json",
 			type: "GET",
 			async: false,
 			data: {auth_token:this.auth_token},
@@ -260,13 +279,21 @@ var fubalytics={
 	Submits multiple new players to the fubalytics system.
 
 	Parameters:
-		The format of the object must be e.g.
-		> var input={fubalytics_user_id:33, 
-		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, position_id:22}, 
-		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, nr:11, position_id:21}]};
+		club_id - ID of the club INSIDE fubalytics
+		team_rank_id - ID of the team rank (e.g "1.") INSIDE fubalytics
+		team_type_id - ID of the team type inside fubalytics
+		fubalytics_user_id - ID of the fubalytics user, who is creating the player.
+		players: array of players.
+		The format of the players must be e.g.
+		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, position_id:22, arb_token:"{e2c_id:44}"}, 
+		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, nr:11, position_id:21, arb_token:"{e2c_id:44}"}]};
 	*/
 	create_players:function(input){
 		var result;
+		check=this.check_params(input, ["club_id", "team_rank_id", "team_type_id", "fubalytics_user_id"])
+		if (!check.result){
+			throw "On Creating players: "+check.messages.join();
+		}
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/batch_create_e2c.json",
 			type: "POST",
@@ -288,7 +315,7 @@ var fubalytics={
 	},
 
 	/*
-	Function: find_player_by_arb_token
+	Function: find_players_by_arb_token
 	Searches the fubalytics database for a player with the
 	given external ID (in your system). 
 
@@ -303,7 +330,7 @@ var fubalytics={
 	Returns:
 		A list of all found players matching the given arb. token.
 	*/
-	find_player_by_arb_token:function(input){
+	find_players_by_arb_token:function(input){
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/find_by_arb_token.json",
@@ -331,7 +358,7 @@ var fubalytics={
 	Deletes a player from the fubalytics system. 
 
 	Parameters:
-		id - The ID of the player in the fubalytics system. See <find_player_by_arb_token> if you 
+		id - The ID of the player in the fubalytics system. See <find_players_by_arb_token> if you 
 		need to find it first.
 
 	Returns:
@@ -366,7 +393,7 @@ var fubalytics={
 
 	Parameters:
 		attributes - object containing following attributes:
-			* id - Fubalytics Id of the player to update. See <find_player_by_arb_token> to get it.
+			* id - Fubalytics Id of the player to update. See <find_players_by_arb_token> to get it.
 			* gender - String "m" or "w" 
 			* firstname - string
 			* lastname - String
@@ -407,8 +434,9 @@ var fubalytics={
 	Parameters:
 		target_node - The dom node, where the IFrame will be placed into
 		fubalytics_player_id - The player ID in the fubalytics System. 
-		You can get it by using the method find_player_by_arb_token(...).
+		You can get it by using the method find_players_by_arb_token(...).
 		input.external_user_id - The ID of the user, in YOUR system.
+		user_arb_token: The arbitrary token of the user, who is calling for the player profile. e.g. "{e2c_id:22}"
 
 	*/
 	create_iframe_player_profile:function(input){
@@ -420,11 +448,45 @@ var fubalytics={
 		this.check_auth_token();
 		this.check_server_url();
 
-		var fubalytics_user=fubalytics.get_user_data(input.external_user_id);
+		var fubalytics_user=fubalytics.get_user_data(input.user_arb_token);
 
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/players/"+input.fubalytics_player_id+
 			"?auth_token="+this.auth_token+"&as_user_id="+fubalytics_user.id); 
+		ifrm.style.width = "100%";
+		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
+		input.target_node.append(ifrm); 
+
+	},
+
+	/*
+	Function: create_iframe_player_statistics
+	Shows the player's statistics
+
+	Parameters:
+		target_node - The dom node, where the IFrame will be placed into
+		fubalytics_player_id - The player ID in the fubalytics System. 
+		You can get it by using the method find_players_by_arb_token(...).
+		input.external_user_id - The ID of the user, in YOUR system.
+		user_arb_token: The arbitrary token of the user, who is calling for the player profile. e.g. "{e2c_id:22}"
+
+	*/
+
+	create_iframe_player_statistics:function(input)
+	{
+		console.log(input);
+		check=this.check_params(input, ["target_node", "user_arb_token", "fubalytics_player_id"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+		this.check_auth_token();
+		this.check_server_url();
+
+		var fubalytics_user=fubalytics.get_user_data(input.user_arb_token);
+
+		ifrm = document.createElement("IFRAME"); 
+		ifrm.setAttribute("src", this.fubalytics_url+"/api/players/"+input.fubalytics_player_id+
+			"/statistics?auth_token="+this.auth_token+"&as_user_id="+fubalytics_user.id); 
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
 		input.target_node.append(ifrm); 
@@ -463,6 +525,8 @@ var fubalytics={
 	},
 
 
+
+
 	/*
 	Funcion: create_iframe_new_video
 	Sets up an iframe in a given node 
@@ -471,30 +535,31 @@ var fubalytics={
 	Parameters:
 		Input:
 		* taget_node: dom node (e.g. $("mynode") if you use jquery)
-		* external_user_id: The user ID of the user inside your system. Use the
+		* user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
 		* club1_name
 		* club2_name
 		* game_time the unix timestamp for the game time
-		* arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
+
+		* game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
 		You can pass arbitrary json objects. e.g. {a:234, b:333, c:"hello"}. Make sure to use " not ' !
 	*/
 	create_iframe_new_video:function(inp){
 		console.log(inp);
 		console.log("node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
-		check=this.check_params(inp, ["target_node", "external_user_id"])
+		check=this.check_params(inp, ["target_node", "user_arb_token"])
 		if (!check.result){
 			throw check.messages.join();
 		}
 		this.check_auth_token();
 		this.check_server_url();
 		//get the fubalytics id
-		var fubalytics_user=fubalytics.get_user_data(inp.external_user_id);
+		var fubalytics_user=fubalytics.get_user_data(inp.user_arb_token);
 
-		var arb_token=encodeURIComponent(inp.arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
+		var game_arb_token=encodeURIComponent(inp.game_arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
 		var url=this.fubalytics_url+"/api/recordings/new?auth_token="+
 			this.auth_token+"&as_user_id="+
-			fubalytics_user.id+"&arb_token="+arb_token;
+			fubalytics_user.id+"&arb_token="+game_arb_token;
 
 		//process the optional parameters
 		
@@ -563,7 +628,7 @@ var fubalytics={
 	Parameters:
 		token - The token. e.g. {e2c_id:3}
 	*/
-	find_recording_by_arb_token:function(token)
+	find_recordings_by_arb_token:function(token)
 	{
 		var result;
 		$.ajax({
