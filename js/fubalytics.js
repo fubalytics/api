@@ -108,7 +108,7 @@ var fubalytics={
 				console.error(d);
 				console.error(s);
 				console.error(x);
-				throw "Error on creating the user: "+d.responseText;
+				throw "Error on creating the new user: "+d.responseText;
 
 			}
 
@@ -143,7 +143,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on getting the user data: "+d.responseText;
 
 			}
 
@@ -174,7 +174,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on getting the team ranks: "+d.responseText;
 			}
 
 		});
@@ -204,7 +204,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on getting the positions: "+d.responseText;
 			}
 
 		});
@@ -307,7 +307,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on creating the players: "+d.responseText;
 			}
 
 		});
@@ -367,8 +367,8 @@ var fubalytics={
 	delete_player:function(id){
 		var result;
 		$.ajax({
-			url:this.fubalytics_url+"/api/players/"+id+"/destroy_player.json",
-			type: "GET",
+			url:this.fubalytics_url+"/api/players/"+id+".json",
+			type: "DELETE",
 			async: false,
 			data: this.merge_options({auth_token:this.auth_token}, id),
 			dataType: "json",
@@ -406,8 +406,8 @@ var fubalytics={
 
 		var result;
 		$.ajax({
-			url:this.fubalytics_url+"/api/players/"+attributes.id+"/update_player.json",
-			type: "GET",
+			url:this.fubalytics_url+"/api/players/"+attributes.id+".json",
+			type: "PUT",
 			async: false,
 			data: this.merge_options({auth_token:this.auth_token}, attributes),
 			dataType: "json",
@@ -682,8 +682,8 @@ var fubalytics={
 		inp.title -  The title of the recording
 		inp.description -  Description
 		inp.start_time -  Start time of the recording
-		inp.event.score_team_1 - Score of the first team
-		inp.event.score_team_2 - Score of the second team
+		inp.event.score_team1 - Score of the first team
+		inp.event.score_team2 - Score of the second team
 		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
 		inp.arb_token
 
@@ -761,8 +761,8 @@ var fubalytics={
 		inp.title -  The title of the recording
 		inp.description -  Description
 		inp.start_time -  Start time of the recording
-		inp.score_team_1 - Score of the first team
-		inp.score_team_2 - Score of the second team
+		inp.score_team1 - Score of the first team
+		inp.score_team2 - Score of the second team
 		inp.event_type_id - Type of the event (training, league,...) see <get_event_types> for a list of supported event types.
 		inp.arb_token - The arbitrary token
 	*/

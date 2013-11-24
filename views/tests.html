@@ -47,8 +47,8 @@ If you dont, no error will occur. But you will not be able to map
 your players in the fubalytics system ever again!
 **/
 function get_all_players_for_test(){
-	var players=[{firstname:"Mario", lastname:"Gomez", birthdate:null, arb_token:"{e2c_id:23}"}, 
-		{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, arb_token:"{e2c_id:24}"}];
+	var players=[{firstname:"Mario", lastname:"Gomez", birthdate:null, arb_token:"{e2c_id:23}", nr:1, position_id:1, gender:"m"}, 
+		{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, arb_token:"{e2c_id:24}", nr:1, position_id:1, gender:"m"}];
 	return players;
 }
 
@@ -135,31 +135,37 @@ try {
 //------------------
 //getting the player stored here (in e2c) with the ID 23
 //------------------
-var player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0].player;
-console.log("player found: %o", player);
+var players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
+if (players.length>0)
+{
+	var player=players[0].player;
+	console.log("player found: %o", player);
 
-//-----------------
-//	update the player data
-//-----------------
-console.log("updating player");
-fubalytics.update_player({id:player.id, gender:"w", firstname:"updated_firstname", lastname:"updated_lastname"});
-//check if the update was successful
-console.log("checking player update");
-player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0];
-if (player.player.firstname!="updated_firstname"){
-	console.error("The player update was not successful!")
-}
-//-----------
-//  destroy the player
-//-----------
-fubalytics.delete_player(player.player.id);
-//check if deleting was successful
-players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
-console.log("found players:");
-console.log(players);
-if (players.length>0){
-	console.error("The player deletion was not successful!");
-}
+
+	//-----------------
+	//	update the player data
+	//-----------------
+	console.log("updating player");
+	fubalytics.update_player({id:player.id, gender:"w", firstname:"updated_firstname", lastname:"updated_lastname"});
+	//check if the update was successful
+	console.log("checking player update");
+	player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0];
+	if (player.player.firstname!="updated_firstname"){
+		console.error("The player update was not successful!");
+		console.log(player.player);
+	}
+	//-----------
+	//  destroy the player
+	//-----------
+	fubalytics.delete_player(player.player.id);
+	//check if deleting was successful
+	players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
+	console.log("found players:");
+	console.log(players);
+	if (players.length>0){
+		console.error("The player deletion was not successful!");
+	}
+}//if players found end
 
 //----------------
 //	testing the recording update
@@ -167,7 +173,7 @@ if (players.length>0){
 var recordings=fubalytics.find_recordings_by_arb_token("e2c_id:11")
 if (recordings.length==0)
 {
-	console.error("Could not find any recording with e2c_id:11");
+	console.log("Could not find any recording with e2c_id:11");
 } 
 else 
 {
@@ -185,8 +191,8 @@ else
 				team_type:{id:1},
 				club:{id:1}
 			},
-			score_team_1:0,
-			score_team_2:1,
+			score_team1:0,
+			score_team2:1,
 			event_type:{id:1},
 		},
 		title:"test",
@@ -216,8 +222,8 @@ inp2={event: {
 			team_type:{id:1},
 			club:{id:1}
 		},
-		score_team_1:0,
-		score_team_2:1,
+		score_team1:0,
+		score_team2:1,
 		event_type:{id:1},
 	},
 	title:"test2",
