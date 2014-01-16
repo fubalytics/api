@@ -31,17 +31,19 @@ var fubalytics={
 		returns the fubalytics club id
 		**/
 		var club_id=null;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/clubs/get_or_create.json",
 			type: "GET",
 			async: false,
 			data: {clubname:name,
+				cache:nocache,
 				auth_token:this.auth_token},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
-				console.log(d);
-				club_id=d[0].club.id;
+				console.log("received response from clubs/get_or_create: %o", d);
+				club_id=d[0].id;
 				console.log("received club id: "+club_id);
 			},
 			error:function(d,s,x){
@@ -86,6 +88,7 @@ var fubalytics={
 		//setup the arbitrary token 
 		var arb_token=inp.arb_token; //JSON.stringify({e2c_id:inp.internal_user_id});
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/users.json",
 			type: "POST",
@@ -96,7 +99,8 @@ var fubalytics={
 				club_id: inp.club_id,
 				language: inp.language,
 				arb_token:arb_token,
-				auth_token:this.auth_token},
+				auth_token:this.auth_token,
+				cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -129,17 +133,19 @@ var fubalytics={
 	*/
 	get_user_data:function(arb_token){
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/users/find_by_arb_token.json",
 			type: "GET",
 			async: false,
 			data: {query: arb_token, //
+				cache:nocache,
 				auth_token:this.auth_token},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
 				console.log(d);
-				result=d.user;
+				result=d;
 			},
 			error:function(d,s,x){
 				console.error(d);
@@ -161,11 +167,12 @@ var fubalytics={
 	*/
 	get_team_ranks:function(){
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/team_ranks.json",
 			type: "GET",
 			async: false,
-			data: {auth_token:this.auth_token},
+			data: {auth_token:this.auth_token, cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -191,11 +198,12 @@ var fubalytics={
 	*/
 	get_positions:function(){
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/positions.json",
 			type: "GET",
 			async: false,
-			data: {auth_token:this.auth_token},
+			data: {auth_token:this.auth_token, cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -221,11 +229,12 @@ var fubalytics={
 	*/
 	get_team_types:function(){
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/team_types.json",
 			type: "GET",
 			async: false,
-			data: {auth_token:this.auth_token},
+			data: {auth_token:this.auth_token, cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -253,11 +262,12 @@ var fubalytics={
 	*/
 	get_event_types:function(){
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/event_types.json",
 			type: "GET",
 			async: false,
-			data: {auth_token:this.auth_token},
+			data: {auth_token:this.auth_token, cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -294,11 +304,12 @@ var fubalytics={
 		if (!check.result){
 			throw "On Creating players: "+check.messages.join();
 		}
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/batch_create_e2c.json",
 			type: "POST",
 			async: false,
-			data: this.merge_options({auth_token:this.auth_token}, input),
+			data: this.merge_options({auth_token:this.auth_token, cache:nocache}, input),
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -320,24 +331,32 @@ var fubalytics={
 	given external ID (in your system). 
 
 	Parameters:
-		The player must be setup before with a
-		suitable arbitrary token. e.g. {external_id:3}.
+	  The player must be setup before with a suitable arbitrary token. 
+	  e.g. {external_id:3}.
 
-		arb_token - String. Pass here the token, you would like to search for.
-		e.g. 
-		> {e2c_id:3}
+		* arb_token - String. Pass here the token, you would like to search for.
+		e.g. {e2c_id:3}
+		* user_id: The ID of the user, who is asking for his/her players.
 
 	Returns:
-		A list of all found players matching the given arb. token.
+		A list of all found players matching the given arb. token and the user ID.
 	*/
 	find_players_by_arb_token:function(input){
+		check=this.check_params(input, ["arb_token", "user_id"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/find_by_arb_token.json",
 			type: "GET",
 			async: false,
-			data: {query:input,
-				auth_token:this.auth_token},
+			data: {query:input.arb_token,
+				as_user_id:input.user_id,
+				auth_token:this.auth_token,
+			  cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -360,17 +379,23 @@ var fubalytics={
 	Parameters:
 		id - The ID of the player in the fubalytics system. See <find_players_by_arb_token> if you 
 		need to find it first.
+		user_id: The ID of the user, who owns the playedr record
 
 	Returns:
 		True if ok, othervise an exception is thrown.
 	*/
-	delete_player:function(id){
+	delete_player:function(input){
+		check=this.check_params(input, ["id", "user_id"])
+		if (!check.result){
+			throw check.messages.join();
+		}
 		var result;
+		var nocache = new Date().getTime();
 		$.ajax({
-			url:this.fubalytics_url+"/api/players/"+id+".json",
+			url:this.fubalytics_url+"/api/players/"+input.id+".json",
 			type: "DELETE",
 			async: false,
-			data: this.merge_options({auth_token:this.auth_token}, id),
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -394,6 +419,7 @@ var fubalytics={
 	Parameters:
 		attributes - object containing following attributes:
 			* id - Fubalytics Id of the player to update. See <find_players_by_arb_token> to get it.
+			* as_user_id: Fubalytics Id of the user, who owns the player record.
 			* gender - String "m" or "w" 
 			* firstname - string
 			* lastname - String
@@ -403,13 +429,13 @@ var fubalytics={
 		if (!check.result){
 			throw check.messages.join();
 		}
-
+		var nocache = new Date().getTime();
 		var result;
 		$.ajax({
 			url:this.fubalytics_url+"/api/players/"+attributes.id+".json",
 			type: "PUT",
 			async: false,
-			data: this.merge_options({auth_token:this.auth_token}, attributes),
+			data: this.merge_options({auth_token:this.auth_token, cache:nocache}, attributes),
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
