@@ -1,0 +1,50 @@
+<html>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- set the patch according to your system! -->
+<script src="../js/fubalytics.js"></script>
+<script src="../js/qunit.js"></script>
+
+
+
+<link rel="stylesheet" href="../css/qunit.css">
+
+<h1>Tests</h1>
+
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+
+<script type="text/javascript">
+
+test( "Test the generation of a iframe view containing the videos", function() {
+
+	fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx"; //this might change frequently. Please check your settings
+	fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000"; //use here only a testing server please!!!!!!
+
+		//overwrite the settings for local testing
+		fubalytics.auth_token="sZSbDwt21FsNv8TwvddN";
+		fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+		//1. get the fubalytics internal ID
+		//2. create the IFrame for this user
+		var fubalytics_user=fubalytics.get_user_data(3141 /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+		console.log("Received user: %o", fubalytics_user);
+		ok( fubalytics_user.arb_token="{e2c_id:1099}", "Requesting the User" );
+		
+		fubalytics.create_iframe_videos_index({
+			target_node:$("#iframe_container"),
+			fubalytics_user_id:fubalytics_user.id
+		});
+
+
+}); //test end
+
+</script>
+
+<div id="iframe_container" style="width:100%;height:900px">
+
+</body>
+</html>
