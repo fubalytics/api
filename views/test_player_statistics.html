@@ -20,8 +20,8 @@
 
 <script type="text/javascript">
 
-fubalytics.auth_token="J7xRf6QyYeMd6w7Vhm2x"; //this might change frequently. Please check your settings
-fubalytics.fubalytics_url="http://pre12.fubalytics.local:3000"; //use here only a testing server please!!!!!!
+fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx"; //this might change frequently. Please check your settings
+fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000"; //use here only a testing server please!!!!!!
 test( "Check the steps for player creating and displaying its statistics", function() {
 	//--------------
 	//	setup a new user for tests
@@ -53,21 +53,22 @@ test( "Check the steps for player creating and displaying its statistics", funct
 
 	var create_players_result=fubalytics.create_players({
 		club_id: club_id,
-		team_rank_id:team_ranks[0].team_rank.id,
-		team_type_id:team_types[0].team_type.id,
+		team_rank_id:team_ranks[0].id,
+		team_type_id:team_types[0].id,
 		fubalytics_user_id:new_user_id,
 		players:[{
 			firstname:"Alex",
 			lastname:"Holm",
 			nr:11,
-			position_id:positions[0].position.id,
+			gender:"w",
+			position_id:positions[0].id,
 			arb_token:"{e2c_id:343}"
 		}]
 	});
 	ok( create_players_result!=null, "creating player Passed!" );
 
 	//find the player's ID in the fubalytics system
-	var players=fubalytics.find_players_by_arb_token("{e2c_id:343}");
+	var players=fubalytics.find_players_by_arb_token({arb_token:"{e2c_id:343}", user_id:new_user_id});
 	console.log("player: %o", players);
 
 	ok( players.length>0 , "searching for player Passed!" );
@@ -76,14 +77,14 @@ test( "Check the steps for player creating and displaying its statistics", funct
 
 	var inp={
 		target_node:$("#stats_container"),
-		fubalytics_player_id:players[0].player.id,
+		fubalytics_player_id:players[0].id,
 		user_arb_token:user_arb_token 
 	}; 
 
 	fubalytics.create_iframe_player_statistics(inp);
 
 	//clean up
-	fubalytics.delete_player(players[0].player.id);
+	fubalytics.delete_player({id:players[0].id, user_id:new_user_id});
 
 });//end of test() function
 
