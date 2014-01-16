@@ -8,9 +8,11 @@
    for reference, where the most of these methods are used in tests.
 */
 var fubalytics={
-	userid:0,
-	fubalytics_url:"",
-	auth_token: "",
+	//if you do not change these, then the sandbox communication will be used by default.
+	userid:0, //the ID of the user in your system
+	fubalytics_url:"http://apitest.fubalytics.net:3000",
+	//1. get the fubalytics internal ID",
+	auth_token: "qwwYWBm4WJ5tzRpnTCqx",
 
 	/*
 	   Function: get_or_create_club
@@ -583,7 +585,7 @@ var fubalytics={
 		var fubalytics_user=fubalytics.get_user_data(inp.user_arb_token);
 
 		var game_arb_token=encodeURIComponent(inp.game_arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
-		var url=this.fubalytics_url+"/api/recordings/new?auth_token="+
+		var url=this.fubalytics_url+"/recordings/new?auth_token="+
 			this.auth_token+"&as_user_id="+
 			fubalytics_user.id+"&arb_token="+game_arb_token;
 

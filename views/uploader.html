@@ -35,9 +35,9 @@ function handle_exception(e){
 	alert(e);
 
 }
-fubalytics.auth_token="4zm7Ma5M2tRJUUZWtUyr";
+//SEE fubalyitcs.js for default access parameters. you may overwrite them here!
+fubalytics.auth_token="sZSbDwt21FsNv8TwvddN";
 fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
-
 
 
 /**
@@ -62,11 +62,11 @@ $(document).ready(function() {
 	//render the uploader
 	fubalytics.create_iframe_new_video({
         target_node:$("#uploader_container"),
-        external_user_id:1, //the user ID in YOUR system
+        user_arb_token:"{e2c_id:3141}", //the user ID in YOUR system
         club1_name: "VFL Wolfsburg",
         club2_name: "Union",
         game_time: "1318781876",
-        event_type_id: event_types[0].event_type.id,
+        event_type_id: event_types[0].id,
         arb_token:JSON.stringify({gamedate_id:3422})
     });
 });

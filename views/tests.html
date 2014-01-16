@@ -60,23 +60,26 @@ function get_all_players_for_test(){
 // Goto to "Profile" and copy your token here. If no token appears (unter the payments button)
 // then contact fubalytics
 //------------
-fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
 
-//you can login into the system using this email manager@fubalytics.de and 123456 as a password.
 
-fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000"; //use here only a testing server please!!!!!!
+/*SEE fubalyitcs.js for default access parameters. you may overwrite them here!
+fubalytics.auth_token="sZSbDwt21FsNv8TwvddN";
+fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+*/
 
 //--------------
 // set the parameters of the new user
 //--------------
 var internal_user_data={
-	id:1, 
+	id:Math.round(Math.random(4)*1e4), //the ID in your system
 	email:"holger"+Math.round(Math.random(4)*1e4)+"@gmx.de", 
 	firstname:"holger", 
 	lastname:"Wottke", 
 	language:"de",
 	club_name:"FC Hadoken 2013"
 };
+console.log("Creating a random user:");
+console.log(internal_user_data);
 
 //----------
 //get the internal club_id of a club from the fubalytics system
