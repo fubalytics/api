@@ -4,8 +4,8 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-<!-- set the patch according to your system! -->
-<script src="../js/fubalytics.js"></script>
+<!-- set the path according to your system!, add a random number to avoid browser caching if you are using php or similar script language -->
+<script src="../js/fubalytics.js?sf"></script>
 
 
 
@@ -14,7 +14,7 @@
 
 
 <h1>Tests</h1>
-
+<div id="message_box"></div>
 
 <script type="text/javascript">
 
@@ -25,7 +25,7 @@ it has been cancelld
 **/
 function handle_exception(e){
 	
-	alert(e);
+	console.error(e);
 
 }
 
@@ -60,8 +60,11 @@ function get_all_players_for_test(){
 // Goto to "Profile" and copy your token here. If no token appears (unter the payments button)
 // then contact fubalytics
 //------------
-fubalytics.auth_token="J7xRf6QyYeMd6w7Vhm2x"; //this might change frequently. Please check your settings
-fubalytics.fubalytics_url="http://pre12.fubalytics.local:3000"; //use here only a testing server please!!!!!!
+fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
+
+//you can login into the system using this email manager@fubalytics.de and 123456 as a password.
+
+fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000"; //use here only a testing server please!!!!!!
 
 //--------------
 // set the parameters of the new user
@@ -82,8 +85,9 @@ try {
 	var club_id=fubalytics.get_or_create_club(internal_user_data.club_name);
 	console.log("The club "+internal_user_data.club_name+" has the id %i in fubalytics", club_id);
 }catch(e){
+	console.error("Getting the club failed");
 	handle_exception(e);
-	return;
+	throw "break since no club could be obtained";
 }
 
 
@@ -118,8 +122,8 @@ try {
 	// submit all the players returned by the method "get_all_players_for_test"
 	//--------------
 	var players_batch_input={
-		team_type_id:team_types[0].team_type.id, 
-		team_rank_id:team_ranks[0].team_rank.id, 
+		team_type_id:team_types[0].id, 
+		team_rank_id:team_ranks[0].id, 
 		club_id:club_id, 
 		fubalytics_user_id:new_user_id, 
 		players:get_all_players_for_test()};
@@ -128,17 +132,20 @@ try {
 }catch(e){
 	//handle the exception
 	handle_exception(e);
-	return;
+	throw "Breaking, since creating users or players failed";
 }
 
 
 //------------------
-//getting the player stored here (in e2c) with the ID 23
+//getting the player stored here (in e2c) with the ID 23, which are in the account of the
+// just created user
 //------------------
-var players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
+var players=fubalytics.find_players_by_arb_token({
+	arb_token:"{e2c_id:23}",
+	user_id: new_user_id});
 if (players.length>0)
 {
-	var player=players[0].player;
+	var player=players[0];
 	console.log("player found: %o", player);
 
 
@@ -146,20 +153,24 @@ if (players.length>0)
 	//	update the player data
 	//-----------------
 	console.log("updating player");
-	fubalytics.update_player({id:player.id, gender:"w", firstname:"updated_firstname", lastname:"updated_lastname"});
+	fubalytics.update_player({id:player.id, 
+		gender:"w", 
+		firstname:"updated_firstname", 
+		lastname:"updated_lastname",
+		as_user_id:new_user_id});
 	//check if the update was successful
 	console.log("checking player update");
-	player=fubalytics.find_players_by_arb_token("{e2c_id:23}")[0];
-	if (player.player.firstname!="updated_firstname"){
+	player=fubalytics.find_players_by_arb_token({arb_token:"{e2c_id:23}", user_id:new_user_id})[0];
+	if (player.firstname!="updated_firstname"){
 		console.error("The player update was not successful!");
-		console.log(player.player);
+		console.log(player);
 	}
 	//-----------
 	//  destroy the player
 	//-----------
-	fubalytics.delete_player(player.player.id);
+	fubalytics.delete_player({user_id:new_user_id, id:player.id});
 	//check if deleting was successful
-	players=fubalytics.find_players_by_arb_token("{e2c_id:23}");
+	players=fubalytics.find_players_by_arb_token({arb_token:"{e2c_id:23}", user_id:new_user_id});
 	console.log("found players:");
 	console.log(players);
 	if (players.length>0){
@@ -236,10 +247,11 @@ new_rec=fubalytics.create_recording(inp2);
 console.log("create a new recording: %o", new_rec);
 
 //now delete it
-fubalytics.delete_recording({id:new_rec.recording.id});
-
+fubalytics.delete_recording({id:new_rec.id});
+$("#message_box").html("<h2>Looks like the tests run successfull. Please see the console for red error messages to be sure</h2>");
 
 </script>
+
 
 </body>
 </html>
