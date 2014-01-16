@@ -50,8 +50,8 @@ if this is called, that means, that the process cannot operate further and
 it has been cancelld 
 **/
 function handle_exception(e){
-	
-	alert(e);
+	console.error(e);
+	//alert(e);
 
 }
 
@@ -59,9 +59,9 @@ function handle_exception(e){
 EDIT_HERE: This is the template for the selection buttons of the team rank
 **/
 var tmpl_team_ranks='<h3>Team Rank</h3> <div id="rank_selector" class="btn-group" data-toggle="buttons-radio"> \
-	{{#.}} {{#team_rank}} \
+	{{#.}} \
 		<button type="button" rank_id={{id}} class="btn btn-success">{{name}}</button> \
-	{{/team_rank}} {{/.}}</ul> \
+	 {{/.}}</ul> \
 	</div>';
 
 
@@ -69,9 +69,9 @@ var tmpl_team_ranks='<h3>Team Rank</h3> <div id="rank_selector" class="btn-group
 EDIT_HERE: This is the template for the selection buttons of the team type
 **/
 var tmpl_team_types='<h3>Team Type</h3> <div id="type_selector" class="btn-group" data-toggle="buttons-radio"> \
-	{{#.}} {{#team_type}} \
+	{{#.}}  \
 		<button type="button" type_id={{id}} class="btn btn-success" id="{{id}}">{{name}}</button> \
-	{{/team_type}} {{/.}}</ul> \
+	 {{/.}}</ul> \
 	</div>';
 
 
@@ -93,13 +93,13 @@ If you dont, no error will occur. But you will not be able to map
 your players in the fubalytics system ever again!
 **/
 function get_all_players(){
-	var players=[{firstname:"Mario", lastname:"Gomez", birthdate:null, arb_token:"{e2c_id:23}"}, 
-		{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, arb_token:"{e2c_id:24}"}];
+	var players=[{firstname:"Mario", lastname:"Gomez", birthdate:null, arb_token:"{e2c_id:23}", nr:1, position_id:1, gender:"m"}, 
+		{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, arb_token:"{e2c_id:24}", nr:2, position_id:1, gender:"m"}];
 	return players;
 }
 
-fubalytics.auth_token="4zm7Ma5M2tRJUUZWtUyr";
-fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
+fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
 
 
 /**
@@ -109,10 +109,11 @@ Set this data according to your application!
 //set this from your database!
 var internal_user_data={
 	id:1, 
-	email:"holger@gmx.de", 
+	email:"holger_connected"+Math.round(Math.random(4)*1e4)+"@gmx.de", 
 	firstname:"holger", 
 	lastname:"Wittke", 
 	language:"de",
+	arb_token:"{e2c_id:234}",
 	club_name:"FC Hadoken 2013"
 };
 
@@ -205,6 +206,7 @@ function start_connection(){
 						club_id: club_id,
 						internal_user_id: internal_user_data.id, //the user ID of THIS user
 						email: internal_user_data.email,
+						arb_token: internal_user_data.arb_token,
 						firstname: internal_user_data.firstname,
 						lastname: internal_user_data.lastname,
 						language: internal_user_data.language});

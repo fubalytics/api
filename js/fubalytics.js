@@ -77,7 +77,7 @@ var fubalytics={
 	setup_new_user:function(inp){
 		check=this.check_params(inp, ["club_id", "arb_token", "firstname", "lastname", "email", "language"])
 		if (!check.result){
-			throw check.messages.join();
+			throw "setup_new_user: "+check.messages.join();
 		}
 		this.check_auth_token();
 		this.check_server_url();
@@ -112,7 +112,7 @@ var fubalytics={
 				console.error(d);
 				console.error(s);
 				console.error(x);
-				throw "Error on creating the new user: "+d.responseText;
+				throw "setup_new_user: Error on creating the new user: "+d.responseText;
 
 			}
 
@@ -344,7 +344,7 @@ var fubalytics={
 	find_players_by_arb_token:function(input){
 		check=this.check_params(input, ["arb_token", "user_id"])
 		if (!check.result){
-			throw check.messages.join();
+			throw "find_players_by_arb_token: "+check.messages.join();
 		}
 
 		var result;
@@ -387,7 +387,7 @@ var fubalytics={
 	delete_player:function(input){
 		check=this.check_params(input, ["id", "user_id"])
 		if (!check.result){
-			throw check.messages.join();
+			throw "delete_player: "+check.messages.join();
 		}
 		var result;
 		var nocache = new Date().getTime();
@@ -427,7 +427,7 @@ var fubalytics={
 	update_player:function(attributes){
 		check=this.check_params(attributes, ["id"])
 		if (!check.result){
-			throw check.messages.join();
+			throw "update_player: "+check.messages.join();
 		}
 		var nocache = new Date().getTime();
 		var result;
