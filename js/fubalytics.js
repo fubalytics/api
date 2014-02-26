@@ -12,7 +12,9 @@ var fubalytics={
 	userid:0, //the ID of the user in your system
 	fubalytics_url:"http://apitest.fubalytics.net:3000",
 	//1. get the fubalytics internal ID",
-	auth_token: "qwwYWBm4WJ5tzRpnTCqx",
+	auth_token: "DasyGinZFZKgnXnmbR6Z",
+	jq:$,
+
 
 	/*
 	   Function: get_or_create_club
@@ -34,7 +36,8 @@ var fubalytics={
 		**/
 		var club_id=null;
 		var nocache = new Date().getTime();
-		$.ajax({
+		console.log("Accessing "+this.fubalytics_url+"/api/clubs/get_or_create.json");
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/clubs/get_or_create.json",
 			type: "GET",
 			async: false,
@@ -91,7 +94,7 @@ var fubalytics={
 		var arb_token=inp.arb_token; //JSON.stringify({e2c_id:inp.internal_user_id});
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/users.json",
 			type: "POST",
 			async: false,
@@ -136,7 +139,7 @@ var fubalytics={
 	get_user_data:function(arb_token){
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/users/find_by_arb_token.json",
 			type: "GET",
 			async: false,
@@ -170,7 +173,7 @@ var fubalytics={
 	get_team_ranks:function(){
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/team_ranks.json",
 			type: "GET",
 			async: false,
@@ -201,7 +204,7 @@ var fubalytics={
 	get_positions:function(){
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/positions.json",
 			type: "GET",
 			async: false,
@@ -232,7 +235,7 @@ var fubalytics={
 	get_team_types:function(){
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/team_types.json",
 			type: "GET",
 			async: false,
@@ -265,7 +268,7 @@ var fubalytics={
 	get_event_types:function(){
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/event_types.json",
 			type: "GET",
 			async: false,
@@ -307,7 +310,7 @@ var fubalytics={
 			throw "On Creating players: "+check.messages.join();
 		}
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/players/batch_create_e2c.json",
 			type: "POST",
 			async: false,
@@ -351,7 +354,7 @@ var fubalytics={
 
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/players/find_by_arb_token.json",
 			type: "GET",
 			async: false,
@@ -393,7 +396,7 @@ var fubalytics={
 		}
 		var result;
 		var nocache = new Date().getTime();
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/players/"+input.id+".json",
 			type: "DELETE",
 			async: false,
@@ -433,7 +436,7 @@ var fubalytics={
 		}
 		var nocache = new Date().getTime();
 		var result;
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/players/"+attributes.id+".json",
 			type: "PUT",
 			async: false,
@@ -562,7 +565,7 @@ var fubalytics={
 
 	Parameters:
 		Input:
-		* taget_node: dom node (e.g. $("mynode") if you use jquery)
+		* taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
 		* user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
 		* club1_name
 		* club2_name
@@ -659,7 +662,7 @@ var fubalytics={
 	find_recordings_by_arb_token:function(token)
 	{
 		var result;
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/recordings/find_by_arb_token.json",
 			type: "GET",
 			async: false,
@@ -718,7 +721,7 @@ var fubalytics={
 	*/
 	update_recording:function(inp)
 	{
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/recordings/"+inp.id+".json",
 			type: "PUT",
 			async: false,
@@ -749,7 +752,7 @@ var fubalytics={
 	*/
 	delete_recording: function(inp)
 	{
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/recordings/"+inp.id+".json",
 			type: "DELETE",
 			async: false,
@@ -796,7 +799,7 @@ var fubalytics={
 	*/
 	create_recording:function(inp)
 	{
-		$.ajax({
+		this.jq.ajax({
 			url:this.fubalytics_url+"/api/recordings.json",
 			type: "POST",
 			async: false,
