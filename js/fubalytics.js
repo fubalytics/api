@@ -341,7 +341,7 @@ var fubalytics={
 
 		* arb_token - String. Pass here the token, you would like to search for.
 		e.g. {e2c_id:3}
-		* user_id: The ID of the user, who is asking for his/her players.
+		* user_id: The ID of the fubalytics user, who is asking for his/her players.
 
 	Returns:
 		A list of all found players matching the given arb. token and the user ID.
