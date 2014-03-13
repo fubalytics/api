@@ -69,7 +69,6 @@ var fubalytics={
 	
 	Parameters:
 		fubalytics_club_id - The id of the club, IN the fubalytics system
-		internal_user_id - the ID of the user in YOUR system. It will be mapped to the user ID in the fubalytics system.
 		arb_token - The arbitrary token. e.g. "{e2c_id:23}"
 		email -  The email of the user. Is required for payment processes.
 		firstname -  (for later payment support)
