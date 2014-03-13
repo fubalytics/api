@@ -36,8 +36,9 @@ function handle_exception(e){
 
 }
 //SEE fubalyitcs.js for default access parameters. you may overwrite them here!
-fubalytics.auth_token="sZSbDwt21FsNv8TwvddN";
-fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+
+fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
+fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
 
 
 /**
@@ -45,15 +46,7 @@ EDIT_HERE:
 Set this data according to your application!
 **/
 //set this from your database!
-var internal_user_data={
-	id:2, 
-	email:"holger@gmx.de", 
-	firstname:"holger", 
-	lastname:"Wittke", 
-	language:"de",
-	club_name:"FC Hadoken 2013"
-};
-
+var uid=568; //this is the ID of your user in YOUR system. copy it from the console output fo connect.html
 
 
 $(document).ready(function() {
@@ -62,10 +55,10 @@ $(document).ready(function() {
 	//render the uploader
 	fubalytics.create_iframe_new_video({
         target_node:$("#uploader_container"),
-        user_arb_token:"{e2c_id:3141}", //the user ID in YOUR system
+        user_arb_token:"{e2c_id:"+uid+"}", //the user ID in YOUR system
         club1_name: "VFL Wolfsburg",
         club2_name: "Union",
-        game_time: "1318781876",
+        game_timex: "1318781876",
         event_type_id: event_types[0].id,
         arb_token:JSON.stringify({gamedate_id:3422})
     });
