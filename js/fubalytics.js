@@ -483,6 +483,9 @@ var fubalytics={
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/players/"+input.fubalytics_player_id+
 			"?auth_token="+this.auth_token+"&as_user_id="+fubalytics_user.id); 
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
 		input.target_node.append(ifrm); 
@@ -517,6 +520,9 @@ var fubalytics={
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/players/"+input.fubalytics_player_id+
 			"/statistics?auth_token="+this.auth_token+"&as_user_id="+fubalytics_user.id); 
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
 		input.target_node.append(ifrm); 
@@ -549,6 +555,10 @@ var fubalytics={
 
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly); 
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
+
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
 		inp.target_node.append(ifrm); 
@@ -614,6 +624,9 @@ var fubalytics={
 
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", url);
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
 			
 		ifrm.style.width = "100%";
 		ifrm.style.height = "1800px"; //inp.target_node.height()+50;  

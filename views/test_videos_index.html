@@ -22,7 +22,7 @@
 
 test( "Test the generation of a iframe view containing the videos", function() {
 
-	fubalytics.auth_token="sZSbDwt21FsNv8TwvddN"; //this might change frequently. Please check your settings
+	fubalytics.auth_token="46bzFo2itCaGRvqsgh2S"; //this might change frequently. Please check your settings
 	fubalytics.fubalytics_url="http://demo.fubalytics.local:3000"; //use here only a testing server please!!!!!!
 
 		//overwrite the settings for local testing
@@ -33,9 +33,9 @@ test( "Test the generation of a iframe view containing the videos", function() {
 
 		//1. get the fubalytics internal ID
 		//2. create the IFrame for this user
-		var fubalytics_user=fubalytics.get_user_data(3141 /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+		var fubalytics_user=fubalytics.get_user_data("{e2c_id:1227}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
 		console.log("Received user: %o", fubalytics_user);
-		ok( fubalytics_user.arb_token="{e2c_id:1099}", "Requesting the User" );
+		ok( fubalytics_user.arb_token="{e2c_id:1227}", "Requesting the User" );
 		
 		fubalytics.create_iframe_videos_index({
 			target_node:$("#iframe_container"),
