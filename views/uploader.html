@@ -37,8 +37,16 @@ function handle_exception(e){
 }
 //SEE fubalyitcs.js for default access parameters. you may overwrite them here!
 
-fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
-fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
+
+///** remote apitest testing
+//fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
+//fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
+
+
+//local testing
+fubalytics.auth_token="46bzFo2itCaGRvqsgh2S";
+fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
+
 
 
 /**
@@ -46,8 +54,7 @@ EDIT_HERE:
 Set this data according to your application!
 **/
 //set this from your database!
-var uid=568; //this is the ID of your user in YOUR system. copy it from the console output fo connect.html
-
+var uid=1227; //this is the ID of your user in YOUR system. copy it from the console output fo connect.html
 
 $(document).ready(function() {
 	var event_types=fubalytics.get_event_types();
@@ -58,7 +65,7 @@ $(document).ready(function() {
         user_arb_token:"{e2c_id:"+uid+"}", //the user ID in YOUR system
         club1_name: "VFL Wolfsburg",
         club2_name: "Union",
-        game_time: "1318781876",
+        game_time: "1318781876", //16.10.2011 - 18:17:56
         event_type_id: event_types[0].id,
         arb_token:JSON.stringify({gamedate_id:3422})
     });
