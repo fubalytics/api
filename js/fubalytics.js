@@ -578,7 +578,7 @@ var fubalytics={
 		* user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
 		* club1_name
 		* club2_name
-		* game_time the unix timestamp for the game time
+		* recording_time the unix timestamp for the game time
 
 		* game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
