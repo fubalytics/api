@@ -154,9 +154,7 @@ var fubalytics={
 			error:function(d,s,x){
 				console.error(d);
 				throw "Error on getting the user data: "+d.responseText;
-
 			}
-
 		});
 		return result;
 
@@ -540,6 +538,7 @@ var fubalytics={
 		inp.fubalytics_user_id - The user ID of the user inside the fubalytics system. Use the
 		method <get_user_data>(your_user_id) to get it!
 		inp.target_node - DOM-Node, where the Iframe should be placed int
+		inp.public: if true, only public videos are displayed
 	*/
 	create_iframe_videos_index:function(inp){
 		console.log(inp);
@@ -552,9 +551,10 @@ var fubalytics={
 		this.check_server_url();
 
 		var readonly = (inp.readonly==null ? false : true);
+		var is_public = (inp.public==null ? false : true);
 
 		ifrm = document.createElement("IFRAME"); 
-		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly); 
+		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly+"&public="+is_public); 
 		ifrm.setAttribute("allowfullscreen", true);
 		ifrm.setAttribute("webkitallowfullscreen", true);
 		ifrm.setAttribute("mozallowfullscreen", true);
