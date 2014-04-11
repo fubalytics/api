@@ -33,13 +33,14 @@ test( "Test the generation of a iframe view containing the videos", function() {
 
 		//1. get the fubalytics internal ID
 		//2. create the IFrame for this user
-		var fubalytics_user=fubalytics.get_user_data("{e2c_id:1227}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+		var fubalytics_user=fubalytics.get_user_data("{e2c_id:5117}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
 		console.log("Received user: %o", fubalytics_user);
-		ok( fubalytics_user.arb_token="{e2c_id:1227}", "Requesting the User" );
+		ok( fubalytics_user.arb_token="{e2c_id:5117}", "Requesting the User" );
 		
 		fubalytics.create_iframe_videos_index({
 			target_node:$("#iframe_container"),
-			fubalytics_user_id:fubalytics_user.id
+			fubalytics_user_id:fubalytics_user.id,
+			is_public:true
 		});
 
 
