@@ -539,6 +539,7 @@ var fubalytics={
 		method <get_user_data>(your_user_id) to get it!
 		inp.target_node - DOM-Node, where the Iframe should be placed int
 		inp.public: if true, only public videos are displayed
+		inp.readonly: if true, the video cannot be edited.
 	*/
 	create_iframe_videos_index:function(inp){
 		console.log(inp);
