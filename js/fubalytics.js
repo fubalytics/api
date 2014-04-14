@@ -559,6 +559,7 @@ var fubalytics={
 		ifrm.setAttribute("allowfullscreen", true);
 		ifrm.setAttribute("webkitallowfullscreen", true);
 		ifrm.setAttribute("mozallowfullscreen", true);
+		ifrm.setAttribute("-webkit-overflow-scrolling","touch");
 
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  
