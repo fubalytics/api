@@ -551,7 +551,7 @@ var fubalytics={
 		this.check_auth_token();
 		this.check_server_url();
 
-		var readonly = (inp.readonly==null ? false : true);
+		var readonly = (inp.readonly==null ? false : inp.readonly);
 		var is_public = (inp.public==null ? false : true);
 
 		ifrm = document.createElement("IFRAME"); 
