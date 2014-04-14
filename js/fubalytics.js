@@ -552,14 +552,26 @@ var fubalytics={
 		this.check_server_url();
 
 		var readonly = (inp.readonly==null ? false : inp.readonly);
-		var is_public = (inp.public==null ? false : true);
+		var is_public = (inp.public==null ? false : is_public);
 
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly+"&public="+is_public); 
 		ifrm.setAttribute("allowfullscreen", true);
+		//check if IE
+		if (navigator.userAgent.indexOf(".NET")!=(-1))
+		{
+			//IE detected
+			ifrm.createAttribute("allowfullscreen");
+			if (document.msFullscreenEnabled==null) //check if the IE browser version is >=11
+			{
+				console.error("!!!!!!!!!  OLD VERSION OF IE DETECTED. IT DOES NOT SUPPORT FULL SCREEN in IFRAMES!");
+			}
+		}
+		
+		
 		ifrm.setAttribute("webkitallowfullscreen", true);
 		ifrm.setAttribute("mozallowfullscreen", true);
-		ifrm.setAttribute("-webkit-overflow-scrolling","touch");
+		ifrm.setAttribute("webkit-overflow-scrolling","touch");
 
 		ifrm.style.width = "100%";
 		ifrm.style.height = "100%"; //inp.target_node.height()+50;  

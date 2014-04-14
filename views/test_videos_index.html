@@ -6,6 +6,7 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- set the patch according to your system! -->
 <script src="../js/fubalytics.js"></script>
+<script src="../js/fubalytics_init.js"></script>
 <script src="../js/qunit.js"></script>
 
 
@@ -22,29 +23,17 @@
 
 test( "Test the generation of a iframe view containing the videos", function() {
 
-	//fubalytics.auth_token="46bzFo2itCaGRvqsgh2S"; //this might change frequently. Please check your settings
-	//fubalytics.fubalytics_url="http://demo.fubalytics.local:3000"; //use here only a testing server please!!!!!!
+	//1. get the fubalytics internal ID
+	//2. create the IFrame for this user
+	var fubalytics_user=fubalytics.get_user_data("{e2c_id:3298}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+	console.log("Received user: %o", fubalytics_user);
+	ok( fubalytics_user.arb_token="{e2c_id:3298}", "Requesting the User" );
 	
-	fubalytics.auth_token="q8CT7RQyqV5gpErVx8xc";
-	fubalytics.fubalytics_url="https://fubalytics.net";
-
-		//overwrite the settings for local testing
-		/*SEE fubalyitcs.js for default access parameters. you may overwrite them here!
-		fubalytics.auth_token="sZSbDwt21FsNv8TwvddN";
-		fubalytics.fubalytics_url="http://demo.fubalytics.local:3000";
-		*/
-
-		//1. get the fubalytics internal ID
-		//2. create the IFrame for this user
-		var fubalytics_user=fubalytics.get_user_data("{e2c_id:3298}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
-		console.log("Received user: %o", fubalytics_user);
-		ok( fubalytics_user.arb_token="{e2c_id:3298}", "Requesting the User" );
-		
-		fubalytics.create_iframe_videos_index({
-			target_node:$("#iframe_container"),
-			fubalytics_user_id:fubalytics_user.id,
-			is_public:true
-		});
+	fubalytics.create_iframe_videos_index({
+		target_node:$("#iframe_container"),
+		fubalytics_user_id:fubalytics_user.id,
+		is_public:true
+	});
 
 
 }); //test end

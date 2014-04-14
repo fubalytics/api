@@ -1,0 +1,5 @@
+	//use this file to configure the fubalytics system instead of editing the fubalytics js file directly
+	//= require fubalytics.js
+	
+	fubalytics.auth_token="xxxxx";
+	fubalytics.fubalytics_url="http://fubalytics.net";
