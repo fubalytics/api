@@ -556,14 +556,14 @@ var fubalytics={
 
 		var readonly = (inp.readonly==null ? false : inp.readonly);
 		var is_public = (inp.public==null ? false : is_public);
-		var referrer= (inp.referrer==null ? "http://localhost:3000/api/views/test_videos_index.html" : inp.referrer); 
-		//https://www.easy2coach.net" : inp.referrer);
+		var referrer= (inp.referrer==null ? "" : inp.referrer); 
 
 		ifrm = document.createElement("IFRAME"); 
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+
 			"&as_user_id="+inp.fubalytics_user_id+
 			"&readonly="+readonly+
-			"&public="+is_public+"&referrer="+referrer); 
+			"&public="+is_public+
+			"&referrer="+referrer); 
 		ifrm.setAttribute("allowfullscreen", true);
 		//check if IE
 		if (navigator.userAgent.indexOf(".NET")!=(-1))

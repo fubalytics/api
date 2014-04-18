@@ -33,6 +33,7 @@ test( "Test the generation of a iframe view containing the videos", function() {
 	fubalytics.create_iframe_videos_index({
 		target_node:$("#iframe_container"),
 		fubalytics_user_id:fubalytics_user.id,
+		referrer:"This Is the URL Where all this code is embedded! Replace it by your own!",
 		is_public:true
 	});
 
