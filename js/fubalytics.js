@@ -601,6 +601,9 @@ var fubalytics={
 		* club1_name
 		* club2_name
 		* recording_time the unix timestamp for the game time
+		* inp.referrer: Set this value to the page, which is showing the Iframe.
+			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
+			For details, see this discussion here:http://stackoverflow.com/questions/9930671/safari-3rd-party-cookie-iframe-trick-no-longer-working
 
 		* game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
@@ -617,11 +620,12 @@ var fubalytics={
 		this.check_server_url();
 		//get the fubalytics id
 		var fubalytics_user=fubalytics.get_user_data(inp.user_arb_token);
-
+		var referrer= (inp.referrer==null ? "" : inp.referrer); 
 		var game_arb_token=encodeURIComponent(inp.game_arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
 		var url=this.fubalytics_url+"/recordings/new?auth_token="+
 			this.auth_token+"&as_user_id="+
-			fubalytics_user.id+"&arb_token="+game_arb_token;
+			fubalytics_user.id+"&arb_token="+game_arb_token+
+			"&referrer="+referrer;
 
 		//process the optional parameters
 		
