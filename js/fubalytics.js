@@ -153,7 +153,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user data: "+d.responseText;
+				throw d //"Error on getting the user data: "+d.responseText;
 			}
 		});
 		return result;
@@ -406,7 +406,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on deleting the player: "+d.responseText;
 			}
 
 		});
@@ -446,7 +446,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on updating the player: "+d.responseText;
 			}
 
 		});
@@ -540,6 +540,9 @@ var fubalytics={
 		inp.target_node - DOM-Node, where the Iframe should be placed int
 		inp.public: if true, only public videos are displayed
 		inp.readonly: if true, the video cannot be edited.
+		inp.referrer: Set this value to the page, which is showing the Iframe.
+			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
+			For details, see this discussion here:http://stackoverflow.com/questions/9930671/safari-3rd-party-cookie-iframe-trick-no-longer-working
 	*/
 	create_iframe_videos_index:function(inp){
 		console.log(inp);
@@ -553,9 +556,14 @@ var fubalytics={
 
 		var readonly = (inp.readonly==null ? false : inp.readonly);
 		var is_public = (inp.public==null ? false : is_public);
+		var referrer= (inp.referrer==null ? "http://localhost:3000/api/views/test_videos_index.html" : inp.referrer); 
+		//https://www.easy2coach.net" : inp.referrer);
 
 		ifrm = document.createElement("IFRAME"); 
-		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+"&as_user_id="+inp.fubalytics_user_id+"&readonly="+readonly+"&public="+is_public); 
+		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+
+			"&as_user_id="+inp.fubalytics_user_id+
+			"&readonly="+readonly+
+			"&public="+is_public+"&referrer="+referrer); 
 		ifrm.setAttribute("allowfullscreen", true);
 		//check if IE
 		if (navigator.userAgent.indexOf(".NET")!=(-1))
@@ -761,7 +769,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on updating the recording: "+d.responseText;
 			}
 
 		});
@@ -792,7 +800,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on deleting the recording: "+d.responseText;
 			}
 
 		});
@@ -839,7 +847,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on getting the user: "+d.responseText;
+				throw "Error on creating the recording: "+d.responseText;
 			}
 
 		});

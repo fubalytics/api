@@ -6,6 +6,7 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- set the patch according to your system! -->
 <script src="../js/fubalytics.js"></script>
+<script src="../js/fubalytics_init.js"></script>
 
 
 
@@ -97,17 +98,6 @@ function get_all_players(){
 		{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, arb_token:"{e2c_id:24}", nr:2, position_id:1, gender:"m", from_date: "1396616179", icon_url:null} ];
 	return players;
 }
-
-///** remote apitest testing
-//fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
-//fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
-
-
-//local testing
-fubalytics.auth_token="q8CT7RQyqV5gpErVx8xc";
-fubalytics.fubalytics_url="https://fubalytics.net";
-
-
 
 
 /**
@@ -229,6 +219,7 @@ function start_connection(){
 					fubalytics.create_players(players_batch_input);
 
 					console.log("The user and the players have been created successfully! The arb token of the user is: "+internal_user_data.arb_token);
+					console.warn("Store this in test_init.js as variable e2c_id: "+internal_user_data.arb_token);
 				}catch(e){
 					handle_exception(e);
 					return;
