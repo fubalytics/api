@@ -6,7 +6,8 @@
 <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <!-- set the patch according to your system! -->
 <script src="../js/fubalytics.js"></script>
-
+<script src="../js/fubalytics_init.js"></script>
+<script src="../js/test_init.js"></script>
 
 
 
@@ -38,15 +39,6 @@ function handle_exception(e){
 //SEE fubalyitcs.js for default access parameters. you may overwrite them here!
 
 
-///** remote apitest testing
-//fubalytics.auth_token="qwwYWBm4WJ5tzRpnTCqx";
-//fubalytics.fubalytics_url="http://apitest.fubalytics.net:3000";
-
-
-//local testing
-fubalytics.auth_token="q8CT7RQyqV5gpErVx8xc";
-fubalytics.fubalytics_url="https://fubalytics.net";
-
 
 
 /**
@@ -54,7 +46,7 @@ EDIT_HERE:
 Set this data according to your application!
 **/
 //set this from your database!
-var uid=3298; //this is the ID of your user in YOUR system. copy it from the console output fo connect.html
+var uid=e2c_id; //this is the ID of your user in YOUR system. copy it from the console output fo connect.html
 
 $(document).ready(function() {
 	var event_types=fubalytics.get_event_types();
@@ -66,6 +58,7 @@ $(document).ready(function() {
         club1_name: "VFL Wolfsburg",
         club2_name: "Union",
         game_time: "1318781876", //16.10.2011 - 18:17:56
+        referrer:"This Is the URL Where all this code is embedded! Replace it by your own!",
         event_type_id: event_types[0].id,
         arb_token:JSON.stringify({gamedate_id:3422})
     });
