@@ -559,17 +559,21 @@ var fubalytics={
 		var referrer= (inp.referrer==null ? "" : inp.referrer); 
 
 		ifrm = document.createElement("IFRAME"); 
+		//ifrm.setAttribute("allowfullscreen",null);
+		ifrm.setAttribute("allowfullscreen", true);
+
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+
 			"&as_user_id="+inp.fubalytics_user_id+
 			"&readonly="+readonly+
 			"&public="+is_public+
 			"&referrer="+referrer); 
-		ifrm.setAttribute("allowfullscreen", true);
+		
 		//check if IE
 		if (document.msFullscreenEnabled!=null)
 		{
 			//IE detected
-			ifrm.createAttribute("allowfullscreen");
+			//$(ifrm).attr("allowfullscreen", '');
+
 			if (document.msFullscreenEnabled==null) //check if the IE browser version is >=11
 			{
 				console.error("!!!!!!!!!  OLD VERSION OF IE DETECTED. IT DOES NOT SUPPORT FULL SCREEN in IFRAMES!");
