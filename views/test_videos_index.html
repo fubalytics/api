@@ -7,6 +7,7 @@
 <!-- set the patch according to your system! -->
 <script src="../js/fubalytics.js"></script>
 <script src="../js/fubalytics_init.js"></script>
+<script src="../js/test_init.js"></script>
 <script src="../js/qunit.js"></script>
 
 
@@ -25,7 +26,7 @@ test( "Test the generation of a iframe view containing the videos", function() {
 
 	//1. get the fubalytics internal ID
 	//2. create the IFrame for this user
-	var fubalytics_user=fubalytics.get_user_data("{e2c_id:3298}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+	var fubalytics_user=fubalytics.get_user_data("{e2c_id:"+e2c_id+"}" /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
 	console.log("Received user: %o", fubalytics_user);
 	ok( fubalytics_user.arb_token="{e2c_id:3298}", "Requesting the User" );
 	
