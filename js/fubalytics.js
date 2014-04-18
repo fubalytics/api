@@ -566,7 +566,7 @@ var fubalytics={
 			"&referrer="+referrer); 
 		ifrm.setAttribute("allowfullscreen", true);
 		//check if IE
-		if (navigator.userAgent.indexOf(".NET")!=(-1))
+		if (document.msFullscreenEnabled!=null)
 		{
 			//IE detected
 			ifrm.createAttribute("allowfullscreen");
