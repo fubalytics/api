@@ -12,7 +12,7 @@ var fubalytics={
 	userid:0, //the ID of the user in your system
 	fubalytics_url:"http://apitest.fubalytics.net:3000",
 	//1. get the fubalytics internal ID",
-	auth_token: "DasyGinZFZKgnXnmbR6Z",
+	auth_token: "xxx",
 	jq:$,
 
 
@@ -59,6 +59,61 @@ var fubalytics={
 
 		});
 		return club_id;
+
+	},
+
+
+	/*
+	   Function: create_virtual_user
+	   Thhe virtual user mechanism enables the users 
+	   of your system to use our remote devices such as the
+	   app or the desktop analysis system.
+	   Since the users always have to login there, they need to know 
+	   the email address stored in our system. This is not guaranteed yet.
+	   So you can create a virtual user, which is linked to the account of your
+	   user in fubalytics. The user will be able to login with the
+	   same email address and the same password in the app.
+	   We do not store the password at any time. Only the hashed key.
+
+	   Parameters:
+	   	email - The real email of the user
+	   	password_hashed - The hashed password of the user in your system. ONly md5 hashes are supported.
+
+
+	   Returns:
+	   	The ID of the virtual user.
+	*/
+	create_virtual_user:function(inp){
+		check=this.check_params(inp, ["email", "password_hashed"])
+		if (!check.result){
+			throw "setup_new_user: "+check.messages.join();
+		}
+		this.check_auth_token();
+		this.check_server_url();
+		vu_id=null;
+		console.log("Accessing "+this.fubalytics_url+"/api/virtual_users.json");
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/virtual_users.json",
+			type: "POST",
+			async: false,
+			data: {email:inp.email,
+				password_hashed:inp.password_hashed,
+				auth_token:this.auth_token},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log("received response from virtual_users/create: %o", d);
+				vu_id=d[0].id;
+				console.log("received club id: "+vu_id);
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on creating the virtual user: "+d.responseJSON;
+
+			}
+
+		});
+		return vu_id;
 
 	},
 
