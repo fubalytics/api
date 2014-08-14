@@ -103,8 +103,8 @@ var fubalytics={
 			context: document.body,
 			success:function(d,s,x){
 				console.log("received response from virtual_users/create: %o", d);
-				vu_id=d[0].id;
-				console.log("received club id: "+vu_id);
+				vu_id=d.id;
+				console.log("received virtual user id: "+vu_id);
 			},
 			error:function(d,s,x){
 				console.error(d);
