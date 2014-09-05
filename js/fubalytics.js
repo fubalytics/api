@@ -918,6 +918,159 @@ var fubalytics={
 
 	},
 
+	/* Function: reads all the team assignments for a given player.
+	Pass a player id in the fubalytics system as input.
+	Parameters:
+		inp.player_id: Id of the player in the fubalytics system. Use <find_players_by_arb_token> how to get it.
+		inp.user_id: Id of the user, who is managing the player.
+	*/
+	get_team_assignments_by_player:function(inp)
+	{
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/team_assignments/by_player.json",
+			type: "GET",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token, as_user_id:inp.user_id}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.get_team_assignments_by_player returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on get_team_assignments_by_player: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+	/* Function: Create a new team assignment for a player.
+	Parameters:
+		inp.user_id: The ID of the user, who manages the player. 
+		inp.player_id: The ID of the player
+		inp.team_rank_id: Optional
+		inp.team_type_id: Optional
+		inp.club_id: The ID of the club
+		inp.date_from: Unix time of the start of the contract
+		inp.date_until: Unix time of the end of the contract.
+		inp.position_id: The ID of the field position.
+		inp.nr: The number of the player in team
+		inp.user_id: The user ID, who manages the player.
+	*/
+	create_team_assignment:function(inp)
+	{
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/team_assignments.json",
+			type: "POST",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token, as_user_id: inp.user_id}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.create_team_assignment returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on create_team_assignment: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/*
+	Function: Update the team assignments data like valid from, until, position
+	Parameters:
+		inp.id: The ID of the team assignment. See <get_team_assignments_by_player> to get it.
+		inp.player_id: The ID of the player inside the fubalytics system. See <find_players_by_arb_token> to get it.
+		inp.position_id: The Position ID of the player in the team. See <get_positions> for details or issue #2052
+		inp.nr: The number of the player in the assignment. e.g 10.
+		inp.user_id: The ID of the fubalytics user who manages the player.
+		inp.date_from: Start date
+		inp.date_until: End date of the contract
+	*/
+	update_team_assignment:function(inp)
+	{
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/team_assignments/"+inp.id+".json",
+			type: "PUT",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token, as_user_id:inp.user_id}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.update_team_assignment returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on update_team_assignment: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+	/* Function: Delete a team assignment.
+	Parameters:
+		inp.id: The ID of the team assignment. See <get_team_assignments_by_player> to get it.
+		inp.user_id: The user ID who manages the player.
+	*/
+	delete_team_assignment:function(inp)
+	{
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/team_assignments/"+inp.id+".json",
+			type: "DELETE",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token, as_user_id:inp.user_id}, inp),
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.delete_team_assignment returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on delete_team_assignment: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/* Function: returns all the positions in the system.
+	*/
+	get_positions:function()
+	{
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/positions.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token},
+			dataType: "json",
+			crossDomain:true,
+			context: document.body,
+			success:function(d,s,x){
+				console.log("fubalytics.get_positions returned: %o", d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on get_positions: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
 
 	//============ PRIVATE====================================
 

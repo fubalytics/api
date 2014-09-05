@@ -7,7 +7,7 @@
 <!-- set the path according to your system!, add a random number to avoid browser caching if you are using php or similar script language -->
 <script src="../js/fubalytics.js"></script>
 <script src="../js/fubalytics_init.js"></script>
-
+<script src="moment.js"></script>
 
 
 
@@ -165,10 +165,58 @@ if (players.length>0)
 	//check if the update was successful
 	console.log("checking player update");
 	player=fubalytics.find_players_by_arb_token({arb_token:"{e2c_id:23}", user_id:new_user_id})[0];
+	console.log(player);
 	if (player.firstname!="updated_firstname"){
 		console.error("The player update was not successful!");
-		console.log(player);
 	}
+
+	//----------------
+	//	get the team assignments of the player
+	//----------------
+	tassignments=fubalytics.get_team_assignments_by_player({player_id:player.id, asuser_id:new_user_id});
+	console.log("Found team assignments: %o", tassignments);
+
+	//----------------
+	//	get positions
+	//---------------
+	positions=fubalytics.get_positions();
+
+
+	//----------
+	//	update the team assignment
+	//----------
+	var ta=tassignments[0];
+	ta_new=fubalytics.update_team_assignment({id: ta.id, 
+		player_id:ta.player_id, 
+		position_id:positions[0].id, 
+		nr: 10, 
+		date_from:1409921666,
+		date_until: 1499921666,
+		user_id:new_user_id });
+	console.log("Updated team assignment: %o", ta_new);
+	var time=moment(ta_new.date_until);
+	console.log("time parsed with moment js: %o", time);
+	if (moment(ta_new.date_until)!=moment(1499921666))
+	{
+		console.error("Assignment of date_until for team assignment failed: %o", ta_new);
+	}
+
+	//-----------------------
+	//	creating a new team assignment
+	//----------------------
+	ta_created=fubalytics.create_team_assignment({user_id: new_user_id, 
+		player_id: ta.player_id,
+		team_rank_id: team_ranks[0].id,
+		team_type_id: team_types[0].id,
+		club_id: club_id,
+		date_from:1409921666,
+		date_until:1429921666,
+		position_id: positions[0].id,
+		nr: 10});
+	console.log("Create team assignment: %o", ta_created);
+
+	
+
 	//-----------
 	//  destroy the player
 	//-----------
