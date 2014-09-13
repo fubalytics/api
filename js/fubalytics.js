@@ -118,6 +118,45 @@ var fubalytics={
 	},
 
 	/*
+	Function: delete_virtual_user
+	Deletes a virtual user
+
+	Parameters:
+		email: the email or the unique user name of the user
+		user_id: The user_id of the acting user (community)
+
+	Returns:
+		True if ok, othervise an exception is thrown.
+	*/
+	delete_virtual_user:function(input){
+		check=this.check_params(input, ["email", "user_id"])
+		if (!check.result){
+			throw "delete_virtual_user: "+check.messages.join();
+		}
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/virtual_users/"+input.email+".json",
+			type: "DELETE",
+			async: false,
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on deleting the virtual user: "+d.responseText;
+			}
+
+		});
+		return result;
+
+	},
+
+	/*
 	Function: setup_new_user
 	Creates a new user in the fubalytics system.
 	It throws an exception if not all parameters have been provided.
