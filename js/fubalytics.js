@@ -86,7 +86,7 @@ var fubalytics={
 	create_virtual_user:function(inp){
 		check=this.check_params(inp, ["email", "password_hashed"])
 		if (!check.result){
-			throw "setup_new_user: "+check.messages.join();
+			throw "create_virtual_user: "+check.messages.join();
 		}
 		this.check_auth_token();
 		this.check_server_url();
