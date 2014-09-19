@@ -1,0 +1,62 @@
+<html>
+  <head>
+     <title>Tag test</title>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"> </script>
+      <script src="../js/handlebars.js"> </script>
+      <script src="../widgets/players_stats.js"></script>
+      <script src="../js/fubalytics.js"></script>
+      <script src="../js/fubalytics_init.js"></script>
+      <script id="tags-template" type="text/x-handlebars-template">
+
+            <h3>{{name}}</h3>
+            <table border = "2">
+              <thead>
+                <th>Tag</th>
+                <th>Spiel</th>
+                <th>Minute</th>
+                <th>Rating</th>
+              </thead>
+              <tbody>
+                {{#tags}}
+                  <tr>
+                    <td>{{tag_type_name}}</td>
+                    <td>{{rec_title}}</td>
+                    <td>{{minute}}</td>
+                    <td>{{rating}}</td>
+                  </tr>
+                {{/tags}}
+              </tbody>
+            </table>
+
+      </script>
+ 
+  </head>
+  
+  <body>
+      <div id="content"></div>
+  </body>
+
+  <script type="text/javascript">
+
+      function handle_exception(e){
+  
+          console.error(e);
+
+      }
+
+
+      try {
+          var stats=tagStatsWidget.render_player("{e2c_id:1234}", 1);
+          console.log("Called the function render_player");
+
+          var source   = $("#tags-template").html();
+          var template = Handlebars.compile(source);
+          $("#content").html(template(stats));
+      }catch(e){
+          console.error("Calling render_player failed");
+          handle_exception(e);
+          throw "break since it does not work";
+      }
+
+  </script>
+</html>
