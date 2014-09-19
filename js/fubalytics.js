@@ -78,16 +78,15 @@ var fubalytics={
 	   Parameters:
 	   	email - The real email of the user
 	   	password_hashed - The hashed password of the user in your system. ONly md5 hashes are supported.
-	   	user_id: The user ID of the user in the fubalytics system.
 
 
 	   Returns:
 	   	The ID of the virtual user.
 	*/
 	create_virtual_user:function(inp){
-		check=this.check_params(inp, ["email", "password_hashed", "user_id"])
+		check=this.check_params(inp, ["email", "password_hashed"])
 		if (!check.result){
-			throw "create_virtual_user: "+check.messages.join();
+			throw "setup_new_user: "+check.messages.join();
 		}
 		this.check_auth_token();
 		this.check_server_url();
@@ -99,7 +98,6 @@ var fubalytics={
 			async: false,
 			data: {email:inp.email,
 				password_hashed:inp.password_hashed,
-				as_user_id: inp.user_id,
 				auth_token:this.auth_token},
 			dataType: "json",
 			context: document.body,
@@ -509,6 +507,40 @@ var fubalytics={
 		return result;
 
 	},
+
+	/*
+	This function reads the tag statistics of a player
+	*/
+
+	get_player_statistics:function(input){
+		check=this.check_params(input, ["id", "user_id"])
+		if (!check.result){
+			throw "get_player_statistics: "+check.messages.join();
+		}
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/players/"+input.id+"/statistics.json",
+			type: "GET",
+			async: false,
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error with getting player statistics: "+d.responseText;
+			}
+
+		});
+		console.log("Returned value of get_player_statistics :" + result);
+		return result;
+
+	},
+
 
 	/*
 	Function: update_player
