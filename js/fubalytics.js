@@ -798,6 +798,8 @@ var fubalytics={
 
 	Parameters:
 		token - The token. e.g. {e2c_id:3}
+	Returns: An array of all found recordings. To get the ID of the recording, you cann call
+	result[0].id
 	*/
 	find_recordings_by_arb_token:function(token)
 	{
