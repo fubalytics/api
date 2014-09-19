@@ -393,8 +393,10 @@ var fubalytics={
 		fubalytics_user_id - ID of the fubalytics user, who is creating the player.
 		players: array of players.
 		The format of the players must be e.g.
-		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, position_id:22, arb_token:"{e2c_id:44}"}, 
-		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, nr:11, position_id:21, arb_token:"{e2c_id:44}"}]};
+		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, 
+		>      position_id:22, arb_token:"{e2c_id:44}", icon_url: "http://server/image.png"}, 
+		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, 
+		>     nr:11, position_id:21, arb_token:"{e2c_id:44}", icon_url: "http://server/image.png"}]};
 	*/
 	create_players:function(input){
 		var result;
