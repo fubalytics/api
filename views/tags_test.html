@@ -6,7 +6,7 @@
       <script src="../widgets/players_stats.js"></script>
       <script src="../js/fubalytics.js"></script>
       <script src="../js/fubalytics_init.js"></script>
-      <script id="some-template" type="text/x-handlebars-template">
+      <script id="tags-template" type="text/x-handlebars-template">
 
             <h3>{{name}}</h3>
             <table border = "2">
@@ -49,7 +49,7 @@
           var stats=tagStatsWidget.render_player("{e2c_id:1234}", 1);
           console.log("Called the function render_player");
 
-          var source   = $("#some-template").html();
+          var source   = $("#tags-template").html();
           var template = Handlebars.compile(source);
           $("#content").html(template(stats));
       }catch(e){
