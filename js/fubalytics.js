@@ -557,6 +557,8 @@ var fubalytics={
 			* gender - String "m" or "w" 
 			* firstname - string
 			* lastname - String
+			* icon_url - The URL of the icon of the player. if not passed, the old one is NOT updated
+			* date_of_birth - Unix time stamp for the date of birth of the player
 	*/
 	update_player:function(attributes){
 		check=this.check_params(attributes, ["id"])
