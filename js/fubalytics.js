@@ -62,6 +62,43 @@ var fubalytics={
 
 	},
 
+	/*
+	Function: update_club
+	Updates the attrbutes of a club in the fubalytics syste
+
+	Parameters:
+		attributes - object containing following attributes:
+			* id - Fubalytics Id of the club to update. See <get_or_create_club> to get it.
+			* name - The new name of the club
+	*/
+	update_club:function(attributes){
+		check=this.check_params(attributes, ["id"])
+		if (!check.result){
+			throw "update_club: "+check.messages.join();
+		}
+		var nocache = new Date().getTime();
+		var result;
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/clubs/"+attributes.id+".json",
+			type: "PUT",
+			async: false,
+			data: this.merge_options({auth_token:this.auth_token, cache:nocache}, attributes),
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on updating the club: "+d.responseText;
+			}
+
+		});
+		return result;
+
+	},
+
 
 	/*
 	   Function: create_virtual_user
