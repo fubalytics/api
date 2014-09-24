@@ -63,26 +63,29 @@ var fubalytics={
 	},
 
 	/*
-	Function: update_club
-	Updates the attrbutes of a club in the fubalytics syste
+	Function: update_user
+	Updates some attributes of the user in the fubalytics account.
 
 	Parameters:
 		attributes - object containing following attributes:
-			* id - Fubalytics Id of the club to update. See <get_or_create_club> to get it.
-			* name - The new name of the club
+			* user_id - The ID of the user in the fubalytics system. See <get_user_data> to get the ID by an arb_token.
+			* club_id - The ID of the club. See <get_or_create_club> to the the ID.
 	*/
-	update_club:function(attributes){
-		check=this.check_params(attributes, ["id"])
+	update_user:function(inp){
+		check=this.check_params(inp, ["user_id", "club_id"])
 		if (!check.result){
-			throw "update_club: "+check.messages.join();
+			throw "update_user: "+check.messages.join();
 		}
 		var nocache = new Date().getTime();
 		var result;
 		this.jq.ajax({
-			url:this.fubalytics_url+"/api/clubs/"+attributes.id+".json",
+			url:this.fubalytics_url+"/api/users/"+inp.id+".json",
 			type: "PUT",
 			async: false,
-			data: this.merge_options({auth_token:this.auth_token, cache:nocache}, attributes),
+			data:{auth_token:this.auth_token, 
+				cache: nocache,
+				club_id: inp.club_id,
+				as_user_id: inp.user_id},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -91,7 +94,7 @@ var fubalytics={
 			},
 			error:function(d,s,x){
 				console.error(d);
-				throw "Error on updating the club: "+d.responseText;
+				throw "Error on updating the user: "+d.responseText;
 			}
 
 		});
