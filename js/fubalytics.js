@@ -582,6 +582,35 @@ var fubalytics={
 
 	},
 
+	update_all_clubs:function(input){
+		check=this.check_params(input, ["club_id", "user_id"])
+		if (!check.result){
+			throw "update_all_clubs: "+check.messages.join();
+		}
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/users/"+input.user_id+"/update_all_clubs.json",
+			type: "GET",
+			async: false,
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache, club_id:input.club_id},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error while updating clubs: "+d.responseText;
+			}
+
+		});
+		console.log("Succesfully updated all the data!");
+		return result;
+
+	},
+
 
 	/*
 	Function: update_player
