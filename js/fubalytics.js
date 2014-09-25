@@ -553,7 +553,17 @@ var fubalytics={
 	},
 
 	/*
-	This function reads the tag statistics of a player
+	
+	Function: get_player_statistics
+	This function reads the tag statistics of a player.
+
+	Parameters:
+		id - The ID of the player in the fubalytics system. See <find_players_by_arb_token> if you 
+		need to find it first.
+		user_id: The ID of the user, who owns the playedr record
+
+	Returns:
+		An array of tag list object.
 	*/
 
 	get_player_statistics:function(input){
@@ -584,6 +594,18 @@ var fubalytics={
 		return result;
 
 	},
+
+
+	/**
+	Function: update_all_clubs
+	When you would like to update the club reference of ALL the player at once,
+	you can call this method. All players in the account of the user with ID=user_id
+	will be set to the club referenced by the passed club_id.
+
+	Parameters in input:
+		club_id - The ID of the club in the fubalytics system
+		user_id - The ID of the user in the fubalytics system. See <get_user_data>.
+		**/
 
 	update_all_clubs:function(input){
 		check=this.check_params(input, ["club_id", "user_id"])
