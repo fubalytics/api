@@ -79,7 +79,7 @@ var fubalytics={
 		var nocache = new Date().getTime();
 		var result;
 		this.jq.ajax({
-			url:this.fubalytics_url+"/api/users/"+inp.id+".json",
+			url:this.fubalytics_url+"/api/users/"+inp.user_id+".json",
 			type: "PUT",
 			async: false,
 			data:{auth_token:this.auth_token, 
