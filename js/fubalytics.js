@@ -181,7 +181,7 @@ var fubalytics={
 			url:this.fubalytics_url+"/api/virtual_users/"+input.email+".json",
 			type: "DELETE",
 			async: false,
-			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache, email:input.email},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
