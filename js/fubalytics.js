@@ -178,7 +178,7 @@ var fubalytics={
 		var result;
 		var nocache = new Date().getTime();
 		this.jq.ajax({
-			url:this.fubalytics_url+"/api/virtual_users/"+input.email+".json",
+			url:this.fubalytics_url+"/api/virtual_users.json",
 			type: "DELETE",
 			async: false,
 			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache, email:input.email},
