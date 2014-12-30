@@ -62,6 +62,46 @@ var fubalytics={
 
 	},
 
+	/*
+	Function: update_user
+	Updates some attributes of the user in the fubalytics account.
+
+	Parameters:
+		attributes - object containing following attributes:
+			* user_id - The ID of the user in the fubalytics system. See <get_user_data> to get the ID by an arb_token.
+			* club_id - The ID of the club. See <get_or_create_club> to the the ID.
+	*/
+	update_user:function(inp){
+		check=this.check_params(inp, ["user_id", "club_id"])
+		if (!check.result){
+			throw "update_user: "+check.messages.join();
+		}
+		var nocache = new Date().getTime();
+		var result;
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/users/"+inp.user_id+".json",
+			type: "PUT",
+			async: false,
+			data:{auth_token:this.auth_token, 
+				cache: nocache,
+				club_id: inp.club_id,
+				as_user_id: inp.user_id},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on updating the user: "+d.responseText;
+			}
+
+		});
+		return result;
+
+	},
+
 
 	/*
 	   Function: create_virtual_user
@@ -138,10 +178,10 @@ var fubalytics={
 		var result;
 		var nocache = new Date().getTime();
 		this.jq.ajax({
-			url:this.fubalytics_url+"/api/virtual_users/"+input.email+".json",
+			url:this.fubalytics_url+"/api/virtual_users.json",
 			type: "DELETE",
 			async: false,
-			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache, email:input.email},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -513,6 +553,91 @@ var fubalytics={
 	},
 
 	/*
+	
+	Function: get_player_statistics
+	This function reads the tag statistics of a player.
+
+	Parameters:
+		id - The ID of the player in the fubalytics system. See <find_players_by_arb_token> if you 
+		need to find it first.
+		user_id: The ID of the user, who owns the playedr record
+
+	Returns:
+		An array of tag list object.
+	*/
+
+	get_player_statistics:function(input){
+		check=this.check_params(input, ["id", "user_id"])
+		if (!check.result){
+			throw "get_player_statistics: "+check.messages.join();
+		}
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/players/"+input.id+"/statistics.json",
+			type: "GET",
+			async: false,
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error with getting player statistics: "+d.responseText;
+			}
+
+		});
+		console.log("Returned value of get_player_statistics :" + result);
+		return result;
+
+	},
+
+
+	/**
+	Function: update_all_clubs
+	When you would like to update the club reference of ALL the player at once,
+	you can call this method. All players in the account of the user with ID=user_id
+	will be set to the club referenced by the passed club_id.
+
+	Parameters in input:
+		club_id - The ID of the club in the fubalytics system
+		user_id - The ID of the user in the fubalytics system. See <get_user_data>.
+		**/
+
+	update_all_clubs:function(input){
+		check=this.check_params(input, ["club_id", "user_id"])
+		if (!check.result){
+			throw "update_all_clubs: "+check.messages.join();
+		}
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/users/"+input.user_id+"/update_all_clubs.json",
+			type: "GET",
+			async: false,
+			data:{auth_token:this.auth_token, as_user_id:input.user_id, cache:nocache, club_id:input.club_id},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error while updating clubs: "+d.responseText;
+			}
+
+		});
+		console.log("Succesfully updated all the data!");
+		return result;
+
+	},
+
+
+	/*
 	Function: update_player
 	Updates the attrbutes of a player in the fubalytics system. 
 
@@ -523,6 +648,8 @@ var fubalytics={
 			* gender - String "m" or "w" 
 			* firstname - string
 			* lastname - String
+			* icon_url - The URL of the icon of the player. if not passed, the old one is NOT updated
+			* date_of_birth - Unix time stamp for the date of birth of the player
 	*/
 	update_player:function(attributes){
 		check=this.check_params(attributes, ["id"])
