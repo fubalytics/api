@@ -428,8 +428,8 @@ var fubalytics={
 
 	Parameters:
 		club_id - ID of the club INSIDE fubalytics
-		team_rank_id - ID of the team rank (e.g "1.") INSIDE fubalytics
-		team_type_id - ID of the team type inside fubalytics
+		team_rank_id - ID of the team rank (e.g "1.") INSIDE fubalytics (optional)
+		team_type_id - ID of the team type inside fubalytics (optional)
 		fubalytics_user_id - ID of the fubalytics user, who is creating the player.
 		players: **array**(!) of players.
 		The format of the players must be e.g.
@@ -452,7 +452,7 @@ var fubalytics={
 	*/
 	create_players:function(input){
 		var result;
-		check=this.check_params(input, ["club_id", "team_rank_id", "team_type_id", "fubalytics_user_id"])
+		check=this.check_params(input, ["club_id", "fubalytics_user_id"])
 		if (!check.result){
 			throw "On Creating players: "+check.messages.join();
 		}
