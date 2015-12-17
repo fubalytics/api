@@ -1,2 +1,4 @@
 	//for testing, this is not required if you dont call
-	var e2c_id=6639; //write the ID here manually after connecting a user, so ther views are accessible
+	
+	//run the view connect.html first in order to get this e2c_id
+	var e2c_id=2598; //write the ID here manually after connecting a user, so the views are accessible
