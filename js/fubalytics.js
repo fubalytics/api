@@ -776,6 +776,7 @@ var fubalytics={
 		method <get_user_data>(your_user_id) to get it!
 		inp.target_node - DOM-Node, where the Iframe should be placed int
 		inp.public: if true, only public videos are displayed
+		inp.n: Maximum number of videos for the first page. Pass a large number if you need all games
 		inp.readonly: if true, the video cannot be edited.
 		inp.referrer: Set this value to the page, which is showing the Iframe.
 			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
@@ -794,6 +795,7 @@ var fubalytics={
 		var readonly = (inp.readonly==null ? false : inp.readonly);
 		var is_public = (inp.public==null ? false : is_public);
 		var referrer= (inp.referrer==null ? "" : inp.referrer); 
+		var num_games= (inp.n==null ? 20 : inp.n); 
 
 		ifrm = document.createElement("IFRAME"); 
 		//ifrm.setAttribute("allowfullscreen",null);
@@ -802,6 +804,7 @@ var fubalytics={
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+
 			"&as_user_id="+inp.fubalytics_user_id+
 			"&readonly="+readonly+
+			"&n="+num_games+
 			"&public="+is_public+
 			"&referrer="+referrer); 
 		
