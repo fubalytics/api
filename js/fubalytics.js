@@ -421,6 +421,35 @@ var fubalytics={
 		return result;
 	},
 
+
+	/*
+	Function: get_recordings
+	Returns:
+		List of event type objects. 
+	*/
+	get_recordings:function(){
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/recordings.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				//console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the recordings: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
 	
 	/*
 	Function: create_players
