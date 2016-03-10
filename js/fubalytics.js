@@ -425,7 +425,7 @@ var fubalytics={
 	/*
 	Function: get_recordings
 	Returns:
-		List of event type objects. 
+		List of recording objects
 	*/
 	get_recordings:function(){
 		var result;
@@ -444,6 +444,35 @@ var fubalytics={
 			error:function(d,s,x){
 				console.error(d);
 				throw "Error on getting the recordings: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/*
+	Function: get_storage_usage
+	Returns:
+		a json object describing the current storage usage
+	*/
+	get_storage_usage:function(){
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/users/storage.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				//console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the storage usage: "+d.responseText;
 			}
 
 		});
