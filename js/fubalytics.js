@@ -898,10 +898,91 @@ var fubalytics={
 
 	Parameters:
 		Input:
+		* inp.taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
+		* inp.user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
+		* inp.club1_name
+		* inp.club2_name
+		* inp.height: the height of the iframe. optional
+		* inp.recording_time the unix timestamp for the game time
+		* inp.referrer: Set this value to the page, which is showing the Iframe.
+			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
+			For details, see this discussion here:http://stackoverflow.com/questions/9930671/safari-3rd-party-cookie-iframe-trick-no-longer-working
+
+		* inp.game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
+		using your internal gamedate_id. 
+		You can pass arbitrary json objects. e.g. {a:234, b:333, c:"hello"}. Make sure to use " not ' !
+	*/
+	create_iframe_new_video:function(inp){
+		console.log(inp);
+		console.log("node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
+		check=this.check_params(inp, ["target_node", "user_arb_token"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+		this.check_auth_token();
+		this.check_server_url();
+		//get the fubalytics id
+		var fubalytics_user=fubalytics.get_user_data(inp.user_arb_token);
+		var referrer= (inp.referrer==null ? "" : inp.referrer); 
+		var game_arb_token=encodeURIComponent(inp.game_arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
+		var url=this.fubalytics_url+"/recordings/new?auth_token="+
+			this.auth_token+"&as_user_id="+
+			fubalytics_user.id+"&arb_token="+game_arb_token+
+			"&referrer="+referrer;
+
+		//process the optional parameters
+		
+		if ('club1_name' in inp){
+			var club1id=this.get_or_create_club(inp.club1_name);
+			url=url+"&club_id="+club1id;
+		}
+		if ('club2_name' in inp){
+			var club2id=this.get_or_create_club(inp.club2_name);
+			url=url+"&opp_club_id="+club2id;
+		}
+		if ('game_time' in inp){
+			url=url+"&recording_time="+inp.game_time;
+		}
+		if ('event_type_id' in inp){
+			url=url+"&event_type_id="+inp.event_type_id;
+		}
+		
+
+
+		console.log(url);
+
+		ifrm = document.createElement("IFRAME"); 
+		ifrm.setAttribute("src", url);
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
+			
+		ifrm.style.width = "100%";
+		var iframe_height="1800px";
+		var height_given=this.check_params(inp, ["height"])
+		if height_given
+		{
+			iframe_height=inp.height;
+		}
+		ifrm.style.height = iframe_height; //inp.target_node.height()+50;  
+		inp.target_node.append(ifrm); 
+
+	},
+
+
+
+
+	/*
+	Funcion: create_iframe_recording
+	Sets up an iframe in a given node 
+	so the user can watch the videos in a recording.
+
+	Parameters:
+		Input:
 		* taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
 		* user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
-		* club1_name
-		* club2_name
+		
+		* height: the height of the iframe. optional
 		* recording_time the unix timestamp for the game time
 		* inp.referrer: Set this value to the page, which is showing the Iframe.
 			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
