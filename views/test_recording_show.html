@@ -1,0 +1,71 @@
+<html>
+<body>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<!-- set the patch according to your system! -->
+<script src="../js/fubalytics.js"></script>
+<script src="../js/fubalytics_init.js"></script>
+<script src="../js/test_init.js"></script>
+<script src="../js/qunit.js"></script>
+
+
+
+<link rel="stylesheet" href="../css/qunit.css">
+
+<h1>Tests</h1>
+
+<div id="qunit"></div>
+<div id="qunit-fixture"></div>
+
+
+<script type="text/javascript">
+
+test( "Test the generation of a iframe view containing the videos", function() {
+
+	//1. get the fubalytics internal ID
+	//2. create the IFrame for this user
+	var arb_token_user="{e2c_id:"+e2c_id+"}";
+	var fubalytics_user=fubalytics.get_user_data(arb_token_user /*use 1099, your internal user ID */); //I put here an ID, which I am sure that it exists in the fubalytics database with the arb_token {e2c_id:1099}.
+	console.log("Received user: %o", fubalytics_user);
+	ok( fubalytics_user.arb_token="{e2c_id:3298}", "Requesting the User" );
+
+
+	var recordings=fubalytics.get_recordings({user_arb_token:arb_token_user});
+	console.log("Received recordings: %o", recordings);
+
+	var rec_object=null;
+	if( recordings.length==undefined) { //means, that is a single object and not an array.
+		console.log("recordings is a single object");
+	    rec_object=recordings;
+	} else 
+	{
+		console.log("recordings is an array");
+		rec_object=recordings[0]; //if aray, take first.
+	}
+
+	
+	
+	
+	fubalytics.create_iframe_recording({
+		target_node:$("#iframe_container"),
+		height:"1800px",
+		fubalytics_user_id:fubalytics_user.id,
+		referrer:"http://localhost:3000/api/views/test_videos_index.html", //This Is the URL Where all this code is embedded! Replace it by your own!",
+		read_only:false,
+		recording_id:rec_object.id
+	});
+
+
+}); //test end
+
+</script>
+
+<div id="iframe_container" style="width:760px;height:900px">
+</div>
+
+
+
+</body>
+</html>
