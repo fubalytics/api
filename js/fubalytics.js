@@ -146,7 +146,7 @@ var fubalytics={
 			success:function(d,s,x){
 				console.log("received response from virtual_users/create: %o", d);
 				vu_item=d;
-				console.log("received virtual user id: "+vu_id);
+				console.log("received virtual user id: "+vu_item);
 			},
 			error:function(d,s,x){
 				console.error(d);
