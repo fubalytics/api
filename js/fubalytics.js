@@ -212,7 +212,7 @@ var fubalytics={
 		language - Set the language of the user. supported strings: "de", "en", "pt", "ru", "es"
 
 	Returns:
-		The ID of the created user inside the fubalytics system.
+		An object including id and the auth_token of the created user.
 	*/
 	setup_new_user:function(inp){
 		check=this.check_params(inp, ["club_id", "arb_token", "firstname", "lastname", "email", "language"])
@@ -245,7 +245,7 @@ var fubalytics={
 			context: document.body,
 			success:function(d,s,x){
 				console.log(d);
-				result= d.user_id;
+				result= d; //contains {id, auth_token}
 				
 			},
 			error:function(d,s,x){
