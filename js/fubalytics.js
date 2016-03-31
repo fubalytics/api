@@ -131,7 +131,7 @@ var fubalytics={
 		}
 		this.check_auth_token();
 		this.check_server_url();
-		vu_id=null;
+		vu_item=null;
 		console.log("Accessing "+this.fubalytics_url+"/api/virtual_users.json");
 		this.jq.ajax({
 			url:this.fubalytics_url+"/api/virtual_users.json",
@@ -145,7 +145,7 @@ var fubalytics={
 			context: document.body,
 			success:function(d,s,x){
 				console.log("received response from virtual_users/create: %o", d);
-				vu_id=d.id;
+				vu_item=d;
 				console.log("received virtual user id: "+vu_id);
 			},
 			error:function(d,s,x){
@@ -155,7 +155,7 @@ var fubalytics={
 			}
 
 		});
-		return vu_id;
+		return vu_item;
 
 	},
 
