@@ -201,20 +201,20 @@ function start_connection(){
 				// 	creating the user in fubalytics
 				//-------------
 				try {
-					var new_user_id=fubalytics.setup_new_user({
+					var new_user.user_id=fubalytics.setup_new_user({
 						club_id: club_id,
 						email: internal_user_data.email,
 						arb_token: internal_user_data.arb_token,
 						firstname: internal_user_data.firstname,
 						lastname: internal_user_data.lastname,
 						language: internal_user_data.language});
-					console.log("User created: "+new_user_id);
+					console.log("User created: "+new_user);
 					// submit all the players
 					var players_batch_input={
 						team_type_id:$("#selected_team_type").val(), 
 						team_rank_id:$("#selected_team_rank").val(), 
 						club_id:club_id, 
-						fubalytics_user_id:new_user_id, 
+						fubalytics_user_id:new_user.user_id, 
 						players:get_all_players()};
 					fubalytics.create_players(players_batch_input);
 
@@ -227,7 +227,7 @@ function start_connection(){
 					//---------------------
 					//md5 for "123456"
 					//e10adc3949ba59abbe56e057f20f883e
-					virt_user_id=fubalytics.create_virtual_user({email:"virtual_email_"+new_user_id+"@mail.com", password_hashed:"e10adc3949ba59abbe56e057f20f883e", user_id:new_user_id})
+					virt_user_id=fubalytics.create_virtual_user({email:"virtual_email_"+new_user.user_id+"@mail.com", password_hashed:"e10adc3949ba59abbe56e057f20f883e", user_id:new_user.user_id})
 					console.log("Created virtual user with ID"+virt_user_id);
 
 				}catch(e){
