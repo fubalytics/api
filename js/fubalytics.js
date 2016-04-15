@@ -119,6 +119,7 @@ var fubalytics={
 	   	email - The real email of the user
 	   	password_hashed - The hashed password of the user in your system. ONly md5 hashes are supported.
 	   	user_id: The user ID of the user in the fubalytics system.
+	   	arb_token (optional)
 
 
 	   Returns:
@@ -133,6 +134,13 @@ var fubalytics={
 		this.check_server_url();
 		vu_item=null;
 		console.log("Accessing "+this.fubalytics_url+"/api/virtual_users.json");
+		//check arb_token
+		var arb_token_available=this.check_params(inp, ["arb_token"]);#
+		var arb_token="";
+		if (arb_token_available)
+		{
+			arb_token=inp.arb_token;
+		}
 		this.jq.ajax({
 			url:this.fubalytics_url+"/api/virtual_users.json",
 			type: "POST",
@@ -140,7 +148,8 @@ var fubalytics={
 			data: {email:inp.email,
 				password_hashed:inp.password_hashed,
 				as_user_id: inp.user_id,
-				auth_token:this.auth_token},
+				auth_token:this.auth_token,
+				arb_token:arb_token},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
