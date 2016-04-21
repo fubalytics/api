@@ -135,7 +135,7 @@ var fubalytics={
 		vu_item=null;
 		console.log("Accessing "+this.fubalytics_url+"/api/virtual_users.json");
 		//check arb_token
-		var arb_token_available=this.check_params(inp, ["arb_token"]);#
+		var arb_token_available=this.check_params(inp, ["arb_token"]);
 		var arb_token="";
 		if (arb_token_available)
 		{
