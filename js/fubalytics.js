@@ -545,6 +545,7 @@ var fubalytics={
 				result=d;
 			},
 			error:function(d,s,x){
+				console.error("Error on creating players with the following input: %o", input);
 				console.error(d);
 				throw "Error on creating the players: "+d.responseText;
 			}
