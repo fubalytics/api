@@ -70,6 +70,7 @@ var fubalytics={
 		attributes - object containing following attributes:
 			* user_id - The ID of the user in the fubalytics system. See <get_user_data> to get the ID by an arb_token.
 			* club_id - The ID of the club. See <get_or_create_club> to the the ID.
+			* lang: Optional - The language of the user. Possible string values: de, en, fr, pt, ru, ar, ch
 	*/
 	update_user:function(inp){
 		check=this.check_params(inp, ["user_id", "club_id"])
