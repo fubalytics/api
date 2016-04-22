@@ -78,14 +78,20 @@ var fubalytics={
 		}
 		var nocache = new Date().getTime();
 		var result;
+		var out_data={auth_token:this.auth_token, 
+				cache: nocache,
+				club_id: inp.club_id,
+				as_user_id: inp.user_id};
+		if (this.check_params(inp, ["lang"]).result) //language change is requested
+		{
+			out_data.lang=inp.lang;
+		}
+
 		this.jq.ajax({
 			url:this.fubalytics_url+"/api/users/"+inp.user_id+".json",
 			type: "PUT",
 			async: false,
-			data:{auth_token:this.auth_token, 
-				cache: nocache,
-				club_id: inp.club_id,
-				as_user_id: inp.user_id},
+			data: out_data,
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){

@@ -216,6 +216,8 @@ function start_connection(){
 						club_id:club_id, 
 						fubalytics_user_id:new_user.user_id, 
 						players:get_all_players()};
+					console.log("Sending players:");
+					console.log(players_batch_input);
 					fubalytics.create_players(players_batch_input);
 
 					console.log("The user and the players have been created successfully! The arb token of the user is: "+internal_user_data.arb_token);
