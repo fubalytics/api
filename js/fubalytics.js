@@ -70,6 +70,7 @@ var fubalytics={
 		attributes - object containing following attributes:
 			* user_id - The ID of the user in the fubalytics system. See <get_user_data> to get the ID by an arb_token.
 			* club_id - The ID of the club. See <get_or_create_club> to the the ID.
+			* lang: Optional - The language of the user. Possible string values: de, en, fr, pt, ru, ar, ch
 	*/
 	update_user:function(inp){
 		check=this.check_params(inp, ["user_id", "club_id"])
@@ -78,14 +79,20 @@ var fubalytics={
 		}
 		var nocache = new Date().getTime();
 		var result;
+		var out_data={auth_token:this.auth_token, 
+				cache: nocache,
+				club_id: inp.club_id,
+				as_user_id: inp.user_id};
+		if (this.check_params(inp, ["lang"]).result) //language change is requested
+		{
+			out_data.lang=inp.lang;
+		}
+
 		this.jq.ajax({
 			url:this.fubalytics_url+"/api/users/"+inp.user_id+".json",
 			type: "PUT",
 			async: false,
-			data:{auth_token:this.auth_token, 
-				cache: nocache,
-				club_id: inp.club_id,
-				as_user_id: inp.user_id},
+			data: out_data,
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
@@ -119,6 +126,7 @@ var fubalytics={
 	   	email - The real email of the user
 	   	password_hashed - The hashed password of the user in your system. ONly md5 hashes are supported.
 	   	user_id: The user ID of the user in the fubalytics system.
+	   	arb_token (optional)
 
 
 	   Returns:
@@ -131,8 +139,15 @@ var fubalytics={
 		}
 		this.check_auth_token();
 		this.check_server_url();
-		vu_id=null;
+		vu_item=null;
 		console.log("Accessing "+this.fubalytics_url+"/api/virtual_users.json");
+		//check arb_token
+		var arb_token_available=this.check_params(inp, ["arb_token"]);
+		var arb_token="";
+		if (arb_token_available)
+		{
+			arb_token=inp.arb_token;
+		}
 		this.jq.ajax({
 			url:this.fubalytics_url+"/api/virtual_users.json",
 			type: "POST",
@@ -140,13 +155,14 @@ var fubalytics={
 			data: {email:inp.email,
 				password_hashed:inp.password_hashed,
 				as_user_id: inp.user_id,
-				auth_token:this.auth_token},
+				auth_token:this.auth_token,
+				arb_token:arb_token},
 			dataType: "json",
 			context: document.body,
 			success:function(d,s,x){
 				console.log("received response from virtual_users/create: %o", d);
-				vu_id=d.id;
-				console.log("received virtual user id: "+vu_id);
+				vu_item=d;
+				console.log("received virtual user id: "+vu_item);
 			},
 			error:function(d,s,x){
 				console.error(d);
@@ -155,7 +171,7 @@ var fubalytics={
 			}
 
 		});
-		return vu_id;
+		return vu_item;
 
 	},
 
@@ -212,7 +228,7 @@ var fubalytics={
 		language - Set the language of the user. supported strings: "de", "en", "pt", "ru", "es"
 
 	Returns:
-		The ID of the created user inside the fubalytics system.
+		An object including id and the auth_token of the created user.
 	*/
 	setup_new_user:function(inp){
 		check=this.check_params(inp, ["club_id", "arb_token", "firstname", "lastname", "email", "language"])
@@ -245,7 +261,7 @@ var fubalytics={
 			context: document.body,
 			success:function(d,s,x){
 				console.log(d);
-				result= d.user_id;
+				result= d; //contains {id, auth_token}
 				
 			},
 			error:function(d,s,x){
@@ -421,6 +437,73 @@ var fubalytics={
 		return result;
 	},
 
+
+	/*
+	Function: get_recordings
+	Returns:
+		List of recording objects
+		== Params
+		* inp.user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
+	*/
+	get_recordings:function(inp){
+		var result;
+		var nocache = new Date().getTime();
+		check=this.check_params(inp, ["user_arb_token"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+
+		var fubalytics_user=fubalytics.get_user_data(inp.user_arb_token);
+
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/recordings.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token, cache:nocache, as_user_id:fubalytics_user.id},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				//console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the recordings: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
+
+	/*
+	Function: get_storage_usage
+	Returns:
+		a json object describing the current storage usage
+	*/
+	get_storage_usage:function(){
+		var result;
+		var nocache = new Date().getTime();
+		this.jq.ajax({
+			url:this.fubalytics_url+"/api/users/storage.json",
+			type: "GET",
+			async: false,
+			data: {auth_token:this.auth_token, cache:nocache},
+			dataType: "json",
+			context: document.body,
+			success:function(d,s,x){
+				//console.log(d);
+				result=d;
+			},
+			error:function(d,s,x){
+				console.error(d);
+				throw "Error on getting the storage usage: "+d.responseText;
+			}
+
+		});
+		return result;
+	},
+
 	
 	/*
 	Function: create_players
@@ -428,19 +511,32 @@ var fubalytics={
 
 	Parameters:
 		club_id - ID of the club INSIDE fubalytics
-		team_rank_id - ID of the team rank (e.g "1.") INSIDE fubalytics
-		team_type_id - ID of the team type inside fubalytics
+
+		team_rank_id - ID of the team rank (e.g "1.") INSIDE fubalytics (optional)
+		team_type_id - ID of the team type inside fubalytics (optional)
 		fubalytics_user_id - ID of the fubalytics user, who is creating the player.
-		players: array of players.
+		players: **array**(!) of players.
 		The format of the players must be e.g.
-		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10, 
-		>      position_id:22, arb_token:"{e2c_id:44}", icon_url: "http://server/image.png"}, 
-		>			{firstname:"Lukas", lastname:"Podolski", birthdate:123456789, 
-		>     nr:11, position_id:21, arb_token:"{e2c_id:44}", icon_url: "http://server/image.png"}]};
+		>	players:[{firstname:"Mario", lastname:"Gomez", birthdate:nil, nr:10,
+		>                from_date: 148902929, 
+		>                position_id:22, 
+		>                arb_token:"{e2c_id:44}", 
+		>                icon_url: "http://server/image.png", 
+		>		 firstname:"Lukas", 
+		>                lastname:"Podolski", 
+		>                birthdate:123456789, 
+		>                nr:11, 
+		>                position_id:21, 
+		>                arb_token:"{e2c_id_2:44}", 
+		>                icon_url: "http://server/image.png"
+		>               },
+		>            {...next player.....}
+		>            ]
+		>
 	*/
 	create_players:function(input){
 		var result;
-		check=this.check_params(input, ["club_id", "team_rank_id", "team_type_id", "fubalytics_user_id"])
+		check=this.check_params(input, ["club_id", "fubalytics_user_id"])
 		if (!check.result){
 			throw "On Creating players: "+check.messages.join();
 		}
@@ -457,6 +553,7 @@ var fubalytics={
 				result=d;
 			},
 			error:function(d,s,x){
+				console.error("Error on creating players with the following input: %o", input);
 				console.error(d);
 				throw "Error on creating the players: "+d.responseText;
 			}
@@ -764,6 +861,7 @@ var fubalytics={
 		method <get_user_data>(your_user_id) to get it!
 		inp.target_node - DOM-Node, where the Iframe should be placed int
 		inp.public: if true, only public videos are displayed
+		inp.n: Maximum number of videos for the first page. Pass a large number if you need all games
 		inp.readonly: if true, the video cannot be edited.
 		inp.referrer: Set this value to the page, which is showing the Iframe.
 			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
@@ -782,6 +880,7 @@ var fubalytics={
 		var readonly = (inp.readonly==null ? false : inp.readonly);
 		var is_public = (inp.public==null ? false : is_public);
 		var referrer= (inp.referrer==null ? "" : inp.referrer); 
+		var num_games= (inp.n==null ? 20 : inp.n); 
 
 		ifrm = document.createElement("IFRAME"); 
 		//ifrm.setAttribute("allowfullscreen",null);
@@ -790,6 +889,7 @@ var fubalytics={
 		ifrm.setAttribute("src", this.fubalytics_url+"/api/recordings?auth_token="+this.auth_token+
 			"&as_user_id="+inp.fubalytics_user_id+
 			"&readonly="+readonly+
+			"&n="+num_games+
 			"&public="+is_public+
 			"&referrer="+referrer); 
 		
@@ -825,16 +925,17 @@ var fubalytics={
 
 	Parameters:
 		Input:
-		* taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
-		* user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
-		* club1_name
-		* club2_name
-		* recording_time the unix timestamp for the game time
+		* inp.taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
+		* inp.user_arb_token: The arb token of the user, who is calling the iframe. e.g. "{e2c_id:22}"
+		* inp.club1_name
+		* inp.club2_name
+		* inp.height: the height of the iframe. optional
+		* inp.recording_time the unix timestamp for the game time
 		* inp.referrer: Set this value to the page, which is showing the Iframe.
 			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
 			For details, see this discussion here:http://stackoverflow.com/questions/9930671/safari-3rd-party-cookie-iframe-trick-no-longer-working
 
-		* game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
+		* inp.game_arb_token: Object of type e.g. {gamedate_id:342}. It will be stored in the recording so you can find the recording later again
 		using your internal gamedate_id. 
 		You can pass arbitrary json objects. e.g. {a:234, b:333, c:"hello"}. Make sure to use " not ' !
 	*/
@@ -884,7 +985,71 @@ var fubalytics={
 		ifrm.setAttribute("mozallowfullscreen", true);
 			
 		ifrm.style.width = "100%";
-		ifrm.style.height = "1800px"; //inp.target_node.height()+50;  
+		var iframe_height="1800px";
+		var height_given=this.check_params(inp, ["height"])
+		if (height_given)
+		{
+			iframe_height=inp.height;
+		}
+		ifrm.style.height = iframe_height; //inp.target_node.height()+50;  
+		inp.target_node.append(ifrm); 
+
+	},
+
+
+
+
+	/*
+	Funcion: create_iframe_recording
+	Sets up an iframe in a given node 
+	so the user can watch the videos in a recording.
+
+	Parameters:
+		Input:
+		* taget_node: dom node (e.g. this.jq("mynode") if you use jquery)
+		* fubalytics_user_id: The of the user inside fubalytics. Get it via get_user_data().
+		* height: the height of the iframe. optional
+		* recording_id: The ID of the recording
+		* read_only: IF set, the user cannot create tags or edit the recording
+		* inp.referrer: Set this value to the page, which is showing the Iframe.
+			This is necessary for Safari Browsers, which are still pain in the a** with Iframes.
+			For details, see this discussion here:http://stackoverflow.com/questions/9930671/safari-3rd-party-cookie-iframe-trick-no-longer-working
+	*/
+	create_iframe_recording:function(inp){
+		console.log(inp);
+		console.log("Target node width:"+inp.target_node.width()+", height:"+inp.target_node.height());
+		check=this.check_params(inp, ["target_node", "read_only", "fubalytics_user_id"])
+		if (!check.result){
+			throw check.messages.join();
+		}
+		this.check_auth_token();
+		this.check_server_url();
+		var referrer= (inp.referrer==null ? "" : inp.referrer); 
+		var game_arb_token=encodeURIComponent(inp.game_arb_token); //JSON.stringify({external_user_id:inp.internal_user_id}));
+		var url=this.fubalytics_url+"/recordings/"+inp.recording_id+
+			"?auth_token="+this.auth_token+
+			"&as_user_id="+ inp.fubalytics_user_id+
+			"&read_only="+inp.read_only+
+			"&arb_token="+game_arb_token+
+			"&referrer="+referrer;
+
+
+		console.log("Generated new url for the iframe to call: "+url);
+
+		ifrm = document.createElement("IFRAME"); 
+		ifrm.setAttribute("src", url);
+		ifrm.setAttribute("allowfullscreen", true);
+		ifrm.setAttribute("webkitallowfullscreen", true);
+		ifrm.setAttribute("mozallowfullscreen", true);
+			
+		ifrm.style.width = "100%";
+		var iframe_height="1800px";
+		var height_given=this.check_params(inp, ["height"])
+		if (height_given)
+		{
+			iframe_height=inp.height;
+		}
+		ifrm.style.height = iframe_height; //inp.target_node.height()+50;  
 		inp.target_node.append(ifrm); 
 
 	},
